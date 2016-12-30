@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">乐康校车4</string>
+
+    <!-- LoginActivity -->
+    <string name="login_activity_hint_user_name">请输入用户名</string>
+    <string name="login_activity_hint_password">请输入密码</string>
+    <string name="login_activity_btn_confirm">登&#160;&#160;录</string>
+    <string name="login_activity_hint_sucsses">登录成功</string>
+
+    <string name="main_tltile">班次列表</string>
+    <string name="map_tltile">站点列表</string>
+    <string name="jie">接幼儿</string>
+    <string name="song">送幼儿</string>
+    <string name="select">幼儿状态</string>
+
+
+    <string name="main_nextstation">下一站</string>
+    <string name="main_tostation_time">预计时间</string>
+
+    <string name="station_count">%1$s / %2$s</string>
+
+    <string name="station_shangcherenshu">已上车：%1$s / %2$s</string>
+    <string name="station_xiacherenshu">已下车：%1$s / %2$s</string>
+
+    <string name="cancel">取&#160;&#160;消</string>
+
+    <string name="manual_operation_dialog_title_choise_children_status">请选择学生状态</string>
+</resources>

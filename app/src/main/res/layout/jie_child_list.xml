@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/include"
+        layout="@layout/titile" />
+
+    <se.emilsjolander.stickylistheaders.ExpandableStickyListHeadersListView
+        android:id="@+id/eslhlv_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="-1dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:drawSelectorOnTop="true"
+        android:dividerHeight="0dp"
+        android:listSelector="@color/transparent"
+        android:overScrollMode="never"
+        android:paddingBottom="80dp"
+        android:scrollbarStyle="outsideOverlay"
+        android:fastScrollEnabled="true"
+        android:layout_above="@+id/rl_bottom"
+        android:layout_below="@+id/include"/>
+    <RelativeLayout
+        android:id="@+id/rl_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/btn_fache"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="发车"
+            android:onClick="fache"/>
+    </RelativeLayout>
+</RelativeLayout>

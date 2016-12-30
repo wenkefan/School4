@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+
+    <color name="login_color">#39cf87</color>
+    <color name="card_view_background_dark">#FFFFFF</color>
+    <color name="black">#ff000000</color>
+    <color name="black1">#99000000</color>
+    <color name="white">#ffffff</color>
+    <color name="darker_gray">#aaa</color>
+    <color name="transparent">#00000000</color><!-- 透明 -->
+    <color name="page_bg_color">#f6f6f6</color>
+    <color name="divider">#dedede</color><!-- 分隔线 -->
+    <!-- 鲜肉色 -->
+    <color name="ghostwhite">#f8f8ff</color>
+    <color name="green">#ff669900</color>
+
+    <color name="main_color">#325EBE</color>
+    <color name="divider_light">#e9e9e9</color>
+
+
+    <color name="transparent_black">#50000000</color><!-- 黑色半透明 -->
+
+</resources>
