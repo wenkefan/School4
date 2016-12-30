@@ -24,4 +24,6 @@
 
     <color name="transparent_black">#50000000</color><!-- 黑色半透明 -->
 
+    <color name="fachebgoff">#78d1bf</color>
+    <color name="fachebgon">#5ac2ad</color>
 </resources>

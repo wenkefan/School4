@@ -151,8 +151,14 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
 
     @Override
     public void setOnItemListener(int position, BaseRecyclerAdapter.ClickableViewHolder holder) {
-        Intent intent = new Intent(this, SongChildListActivity.class);
-        intent.putExtra("", position);
+        int location = 0;
+        List<Integer> childCount = (List<Integer>) sp.queryForSharedToObject(Keyword.CHILDCOUNT);
+        for (int i = 0; i < position; i++ ){
+            location += childCount.get(i);
+        }
+        Intent intent = new Intent(this, SongChildListActivity2.class);
+        intent.putExtra(Keyword.JUMPPOSITION, location);
+        intent.putExtra(Keyword.STATIONPOSITION, position);
         startActivity(intent);
     }
     private void setTitleNemaTime(){

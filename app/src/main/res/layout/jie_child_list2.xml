@@ -12,6 +12,17 @@
         android:id="@+id/rv_recyle_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/title"/>
+        android:layout_above="@+id/btn_fache"
+        android:layout_below="@+id/title" />
 
+    <Button
+        android:id="@+id/btn_fache"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="20sp"
+        android:background="@drawable/facheshapeoff"
+        android:text="发 车"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
 </RelativeLayout>
