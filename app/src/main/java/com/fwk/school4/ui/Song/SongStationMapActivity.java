@@ -192,7 +192,17 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
      * 记录实际到站时间
      */
     private void setSJTime(){
-        String time = GetDateTime.getH() + ":" +GetDateTime.getM();
+        int H = GetDateTime.getH();
+        int M = GetDateTime.getM();
+        String Hh = "00";
+        String Mm = "00";
+        if (H < 10){
+            Hh = "0" + H;
+        }
+        if (M < 10){
+            Mm = "0" + M;
+        }
+        String time = Hh + Mm;
         times.add(time);
         sp.saveToShared(Keyword.GETSJTIME,times);
     }

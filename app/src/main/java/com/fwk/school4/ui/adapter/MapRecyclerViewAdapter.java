@@ -70,8 +70,8 @@ public class MapRecyclerViewAdapter extends BaseRecyclerAdapter implements View.
     @Override
     public void onBindViewHolder(ClickableViewHolder holder, int position) {
         if (holder instanceof MapViewHolder) {
-            String str1 = String.format(mContext.getString(R.string.station_shangcherenshu),0,getnumber());
-            String str2 = String.format(mContext.getString(R.string.station_xiacherenshu),0,2);
+            String str1 = String.format(mContext.getString(R.string.station_shangcherenshu),0,getShangChenumber(list.get(position).getStationId()));
+            String str2 = String.format(mContext.getString(R.string.station_xiacherenshu),0,getXiaCheNumber(list.get(position).getStationId()));
             MapViewHolder viewHolder = (MapViewHolder) holder;
             setLayoutParams(viewHolder, 0.95f);
 
@@ -165,8 +165,15 @@ public class MapRecyclerViewAdapter extends BaseRecyclerAdapter implements View.
         return (int) (dpValue * scale + 0.5f);
     }
 
-    private int getnumber(){
-        List<StaBean> list1 = map.get(list.get(stationPosition).getStationId() + "01");
+    private int getShangChenumber(int stationId){
+        List<StaBean> list1 = map.get(stationId + "01");
+        if (list1 != null){
+            return list1.size();
+        }
+        return 0;
+    }
+    private int getXiaCheNumber(int stationId){
+        List<StaBean> list1 = map.get(stationId + "02");
         if (list1 != null){
             return list1.size();
         }

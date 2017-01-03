@@ -25,6 +25,7 @@ import com.fwk.school4.ui.adapter.MapRecyclerViewAdapter;
 import com.fwk.school4.utils.GetDateTime;
 import com.fwk.school4.utils.LogUtils;
 import com.fwk.school4.utils.SharedPreferencesUtils;
+import com.fwk.school4.utils.Stationutil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -190,10 +191,8 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
     public void OnClickListener(int position) {
         setSJTime();
         int location = 0;
-        List<Integer> childCount = (List<Integer>) sp.queryForSharedToObject(Keyword.CHILDCOUNT);
-        for (int i = 0; i < position; i++) {
-            location += childCount.get(i);
-        }
+        Stationutil stationutil =  Stationutil.newInstance();
+        stationutil.JumpPosition(position);
         Intent intent = new Intent(this, JieChildListActivity2.class);
         intent.putExtra(Keyword.JUMPPOSITION, location);
         intent.putExtra(Keyword.STATIONPOSITION, position);
@@ -204,7 +203,22 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
      * 记录实际到站时间
      */
     private void setSJTime(){
-        String time = GetDateTime.getH() + ":" +GetDateTime.getM();
+        int H = GetDateTime.getH();
+        int M = GetDateTime.getM();
+        String Hh = "00";
+        String Mm = "00";
+        if (H < 10){
+            Hh = "0" + H;
+        }else {
+            Hh = H + "";
+        }
+
+        if (M < 10){
+            Mm = "0" + M;
+        }else {
+            Mm = M + "";
+        }
+        String time = Hh + ":" + Mm;
         times.add(time);
         sp.saveToShared(Keyword.GETSJTIME,times);
     }

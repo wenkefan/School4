@@ -52,6 +52,7 @@ public class Stationutil {
 
     private Map<String, List<ChildBean.RerurnValueBean>> map;
     private List<StaBean> selectSta;
+
     private void Jiefenzu() {
         map = new HashMap<>();
         selectSta = new ArrayList<>();
@@ -64,13 +65,13 @@ public class Stationutil {
                     number = true;
                 }
             }
-            if (number){
+            if (number) {
                 map.put(staBean.getStrid(), child);
                 selectSta.add(staBean);
             }
         }
         sp.saveToShared(Keyword.MAPLIST, map);
-        sp.saveToShared(Keyword.SELECTSTA,selectSta);
+        sp.saveToShared(Keyword.SELECTSTA, selectSta);
     }
 
     private void Songfenzu() {
@@ -85,18 +86,26 @@ public class Stationutil {
                     number = true;
                 }
             }
-            if (number){
+            if (number) {
                 map.put(staBean.getStrid(), child);
                 selectSta.add(staBean);
             }
         }
         sp.saveToShared(Keyword.MAPLIST, map);
-        sp.saveToShared(Keyword.SELECTSTA,selectSta);
+        sp.saveToShared(Keyword.SELECTSTA, selectSta);
     }
 
-
-
-
+    public int JumpPosition(int stationPosition) {
+        int number = 0;
+        try{
+            for (int i = 0; i < (stationPosition - 1) * 2; i++) {
+                number = number + map.get(list.get(i).getStrid()).size();
+            }
+            return number;
+        } catch (Exception o) {
+            return 0;
+        }
+    }
 
 
     /**

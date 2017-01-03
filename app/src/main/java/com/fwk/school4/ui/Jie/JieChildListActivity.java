@@ -79,6 +79,7 @@ public class JieChildListActivity extends BasaActivity implements OnHeaderClickL
         if (isJieShu){
             ToastUtil.show("结束了");
             sp.setboolean(Keyword.BEGIN,false);
+            sp.saveToShared(Keyword.GETSJTIME,null);
             this.finish();
         } else {
             position++;

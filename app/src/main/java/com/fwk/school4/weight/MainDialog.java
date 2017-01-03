@@ -109,6 +109,7 @@ public class MainDialog {
                 sp.setboolean(Keyword.BEGIN,false);
                 context.requestBanci();
                 dialogInterface.dismiss();
+                sp.saveToShared(Keyword.GETSJTIME,null);
             }
         });
         builder.setPositiveButton("继续", new DialogInterface.OnClickListener() {
