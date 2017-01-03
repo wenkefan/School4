@@ -50,6 +50,55 @@ public class Stationutil {
 
     }
 
+    private Map<String, List<ChildBean.RerurnValueBean>> map;
+    private List<StaBean> selectSta;
+    private void Jiefenzu() {
+        map = new HashMap<>();
+        selectSta = new ArrayList<>();
+        for (StaBean staBean : list) {
+            boolean number = false;
+            List<ChildBean.RerurnValueBean> child = new ArrayList<>();
+            for (ChildBean.RerurnValueBean childBean : bean) {
+                if (childBean.getConnectStation() == staBean.getId() && !staBean.getStrid().equals(staBean.getId() + "02")) {
+                    child.add(childBean);
+                    number = true;
+                }
+            }
+            if (number){
+                map.put(staBean.getStrid(), child);
+                selectSta.add(staBean);
+            }
+        }
+        sp.saveToShared(Keyword.MAPLIST, map);
+        sp.saveToShared(Keyword.SELECTSTA,selectSta);
+    }
+
+    private void Songfenzu() {
+        map = new HashMap<>();
+        selectSta = new ArrayList<>();
+        for (StaBean staBean : list) {
+            boolean number = false;
+            List<ChildBean.RerurnValueBean> child = new ArrayList<>();
+            for (ChildBean.RerurnValueBean childBean : bean) {
+                if (childBean.getSendStartStation() == staBean.getId() && !staBean.getStrid().equals(staBean.getId() + "02")) {
+                    child.add(childBean);
+                    number = true;
+                }
+            }
+            if (number){
+                map.put(staBean.getStrid(), child);
+                selectSta.add(staBean);
+            }
+        }
+        sp.saveToShared(Keyword.MAPLIST, map);
+        sp.saveToShared(Keyword.SELECTSTA,selectSta);
+    }
+
+
+
+
+
+
     /**
      * 分组
      * <p>
@@ -149,47 +198,5 @@ public class Stationutil {
         sp.saveToShared(Keyword.CHILDCOUNT, childCount);
     }
 
-    private Map<String, List<ChildBean.RerurnValueBean>> map;
-    private List<StaBean> selectSta;
-    private void Jiefenzu() {
-        map = new HashMap<>();
-        selectSta = new ArrayList<>();
-        for (StaBean staBean : list) {
-            boolean number = false;
-            List<ChildBean.RerurnValueBean> child = new ArrayList<>();
-            for (ChildBean.RerurnValueBean childBean : bean) {
-                if (childBean.getConnectStation() == staBean.getId() && !staBean.getStrid().equals(staBean.getId() + "02")) {
-                    child.add(childBean);
-                    number = true;
-                }
-            }
-            if (number){
-                map.put(staBean.getStrid(), child);
-                selectSta.add(staBean);
-            }
-        }
-        sp.saveToShared(Keyword.MAPLIST, map);
-        sp.saveToShared(Keyword.SELECTSTA,selectSta);
-    }
 
-    private void Songfenzu() {
-        map = new HashMap<>();
-        selectSta = new ArrayList<>();
-        for (StaBean staBean : list) {
-            boolean number = false;
-            List<ChildBean.RerurnValueBean> child = new ArrayList<>();
-            for (ChildBean.RerurnValueBean childBean : bean) {
-                if (childBean.getSendStartStation() == staBean.getId() && !staBean.getStrid().equals(staBean.getId() + "02")) {
-                    child.add(childBean);
-                    number = true;
-                }
-            }
-            if (number){
-                map.put(staBean.getStrid(), child);
-                selectSta.add(staBean);
-            }
-        }
-        sp.saveToShared(Keyword.MAPLIST, map);
-        sp.saveToShared(Keyword.SELECTSTA,selectSta);
-    }
 }

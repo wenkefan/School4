@@ -20,14 +20,13 @@ import com.fwk.school4.network.api.ChildNetWork;
 import com.fwk.school4.network.api.StaionNetWork;
 import com.fwk.school4.listener.NetWorkListener;
 import com.fwk.school4.ui.BasaActivity;
-import com.fwk.school4.ui.Jie.JieChildListActivity;
 import com.fwk.school4.ui.adapter.BaseRecyclerAdapter;
 import com.fwk.school4.ui.adapter.MapRecyclerViewAdapter;
 import com.fwk.school4.utils.GetDateTime;
 import com.fwk.school4.utils.LogUtils;
 import com.fwk.school4.utils.SharedPreferencesUtils;
-import com.fwk.school4.utils.ToastUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -57,6 +56,7 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
 
     private BanciBean.RerurnValueBean bean;
     private int stationPosition = 0;
+    private List<String> times;
 
     @Override
     public int getLayoutId() {
@@ -71,11 +71,12 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
         display = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(display);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         boolean is = sp.getBoolean(Keyword.ISDAOZHAN);
-        if (!sp.getBoolean(Keyword.BEGIN)){
+        if (!sp.getBoolean(Keyword.BEGIN)) {
             this.finish();
             return;
         }
@@ -84,9 +85,10 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
             setTitleNemaTime();
             adapter.setPostion(stationPosition);
             adapter.notifyDataSetChanged();
-            sp.setboolean(Keyword.ISDAOZHAN,false);
+            sp.setboolean(Keyword.ISDAOZHAN, false);
         }
     }
+
     private void initData() {//初始化数据
         list = (List<BanciBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_BANCI_LIST);
         Intent intent = getIntent();
@@ -103,9 +105,13 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
     }
 
     private void recyclerInit() {
+        times = (List<String>) sp.queryForSharedToObject(Keyword.GETSJTIME);
+        if (times == null) {
+            times = new ArrayList<>();
+        }
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
-        adapter = new MapRecyclerViewAdapter(display, 0);
+        adapter = new MapRecyclerViewAdapter(display, 0, times);
         mRecyclerView.setAdapter(adapter);
         adapter.setOnItemListener(this);
         adapter.setOnClickListener(this);
@@ -153,7 +159,7 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
     public void setOnItemListener(int position, BaseRecyclerAdapter.ClickableViewHolder holder) {
         int location = 0;
         List<Integer> childCount = (List<Integer>) sp.queryForSharedToObject(Keyword.CHILDCOUNT);
-        for (int i = 0; i < position; i++ ){
+        for (int i = 0; i < position; i++) {
             location += childCount.get(i);
         }
         Intent intent = new Intent(this, SongChildListActivity2.class);
@@ -161,22 +167,33 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
         intent.putExtra(Keyword.STATIONPOSITION, position);
         startActivity(intent);
     }
-    private void setTitleNemaTime(){
+
+    private void setTitleNemaTime() {
         List<StationBean.RerurnValueBean> stationList =
                 (List<StationBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_STATION_LIST);
         mStationNaem.setText(stationList.get(stationPosition).getStationName());
         mStationTime.setText(GetDateTime.getYJTime(stationList.get(stationPosition).getDuration()));
     }
+
     @Override
     public void OnClickListener(int position) {
+        setSJTime();
         int location = 0;
         List<Integer> childCount = (List<Integer>) sp.queryForSharedToObject(Keyword.CHILDCOUNT);
-        for (int i = 0; i < position; i++ ){
+        for (int i = 0; i < position; i++) {
             location += childCount.get(i);
         }
         Intent intent = new Intent(this, SongChildListActivity2.class);
         intent.putExtra(Keyword.JUMPPOSITION, location);
         intent.putExtra(Keyword.STATIONPOSITION, position);
         startActivity(intent);
+    }
+    /**
+     * 记录实际到站时间
+     */
+    private void setSJTime(){
+        String time = GetDateTime.getH() + ":" +GetDateTime.getM();
+        times.add(time);
+        sp.saveToShared(Keyword.GETSJTIME,times);
     }
 }

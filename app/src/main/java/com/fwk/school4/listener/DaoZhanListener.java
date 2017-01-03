@@ -5,5 +5,5 @@ package com.fwk.school4.listener;
  */
 
 public interface DaoZhanListener {
-    public void OnClickListener(int position);
+    void OnClickListener(int position);
 }

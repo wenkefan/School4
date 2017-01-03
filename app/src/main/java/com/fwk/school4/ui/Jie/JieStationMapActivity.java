@@ -26,6 +26,7 @@ import com.fwk.school4.utils.GetDateTime;
 import com.fwk.school4.utils.LogUtils;
 import com.fwk.school4.utils.SharedPreferencesUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -64,6 +65,7 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
 
     private int stationPosition = 0;
 
+    private List<String> times;
     @Override
     public int getLayoutId() {
         return R.layout.station_map_activity2;
@@ -109,11 +111,15 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
     }
 
     private void recyclerInit() {
+        times = (List<String>) sp.queryForSharedToObject(Keyword.GETSJTIME);
+        if (times == null){
+            times = new ArrayList<>();
+        }
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
         display = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(display);
-        adapter = new MapRecyclerViewAdapter(display, stationPosition);
+        adapter = new MapRecyclerViewAdapter(display, stationPosition,times);
         mRecyclerView.setAdapter(adapter);
         adapter.setOnItemListener(this);
         adapter.setOnClickListener(this);
@@ -182,6 +188,7 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
 
     @Override
     public void OnClickListener(int position) {
+        setSJTime();
         int location = 0;
         List<Integer> childCount = (List<Integer>) sp.queryForSharedToObject(Keyword.CHILDCOUNT);
         for (int i = 0; i < position; i++) {
@@ -191,5 +198,14 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
         intent.putExtra(Keyword.JUMPPOSITION, location);
         intent.putExtra(Keyword.STATIONPOSITION, position);
         startActivity(intent);
+    }
+
+    /**
+     * 记录实际到站时间
+     */
+    private void setSJTime(){
+        String time = GetDateTime.getH() + ":" +GetDateTime.getM();
+        times.add(time);
+        sp.saveToShared(Keyword.GETSJTIME,times);
     }
 }

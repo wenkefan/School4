@@ -70,15 +70,15 @@ public class StaionNetWork extends BaseNetWork {
 
                 }
                 List<StaBean> staBeen = new ArrayList<>();
-                List<StationModeBean> listId = new ArrayList<>();
+//                List<StationModeBean> listId = new ArrayList<>();
                 for (StationBean.RerurnValueBean bean1 : bean.getRerurnValue()){
-                    StationModeBean modeBean = new StationModeBean();
-                    modeBean.setId(bean1.getStationId());
-                    modeBean.setNameDown(bean1.getStationiddown());
-                    modeBean.setNameUp(bean1.getStationidup());
-                    modeBean.setStationiddown(StationMode.setDown(bean1.getStationName()));
-                    modeBean.setStationidup(StationMode.setUp(bean1.getStationName()));
-                    listId.add(modeBean);
+//                    StationModeBean modeBean = new StationModeBean();
+//                    modeBean.setId(bean1.getStationId());
+//                    modeBean.setNameDown(bean1.getStationiddown());
+//                    modeBean.setNameUp(bean1.getStationidup());
+//                    modeBean.setStationiddown(StationMode.setDown(bean1.getStationName()));
+//                    modeBean.setStationidup(StationMode.setUp(bean1.getStationName()));
+//                    listId.add(modeBean);
                     StaBean staBean1 = new StaBean();
                     staBean1.setId(bean1.getStationId());
                     staBean1.setName(StationMode.setDown(bean1.getStationName()));
@@ -94,7 +94,7 @@ public class StaionNetWork extends BaseNetWork {
                 }
 
                 sp.saveToShared(Keyword.SP_STATION_LIST,list);
-                sp.saveToShared(Keyword.STATIONIDLIST,listId);
+//                sp.saveToShared(Keyword.STATIONIDLIST,listId);
                 sp.saveToShared(Keyword.STAIDLIST,staBeen);
                 listener.NetWorkSuccess(Keyword.FLAGSTATION);
                 bean = null;

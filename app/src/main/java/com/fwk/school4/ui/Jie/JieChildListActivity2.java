@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.fwk.school4.R;
 import com.fwk.school4.constant.Keyword;
 import com.fwk.school4.model.ChildBean;
 import com.fwk.school4.model.StaBean;
+import com.fwk.school4.model.StationBean;
 import com.fwk.school4.ui.BasaActivity;
 import com.fwk.school4.ui.ShangcheActivity;
 import com.fwk.school4.ui.XiacheActivity;
@@ -22,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
  * Created by fanwenke on 16/12/23.
@@ -33,13 +37,24 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
     TextView title;
     @InjectView(R.id.rv_recyle_activity)
     RecyclerView rv;
+    @InjectView(R.id.btn_fache)
+    Button btn;
 
     private LinearLayoutManager manager;
     private JieChildListAdapter2 adapter;
-    private SharedPreferencesUtils sp;
+    private SharedPreferencesUtils sp = new SharedPreferencesUtils();;
     private Map<String, List<ChildBean.RerurnValueBean>> map;//幼儿map
     private StaBean staBean;//选中幼儿所在的站点
     private int mItem;//站点中幼儿的位置数
+    private int position;
+    private int jumpPosition;
+    private List<StationBean.RerurnValueBean> stationlist;
+    private boolean isJieShu = false;
+
+    public JieChildListActivity2() {
+
+        stationlist = (List<StationBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_STATION_LIST);
+    }
 
     @Override
     public int getLayoutId() {
@@ -49,13 +64,21 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
     @Override
     public void init() {
         title.setText(R.string.jie);
-        sp = new SharedPreferencesUtils();
+
+        Intent intent = getIntent();
+        position = intent.getIntExtra(Keyword.STATIONPOSITION, 0);
+        jumpPosition = intent.getIntExtra(Keyword.JUMPPOSITION, 0);
+
         manager = new LinearLayoutManager(this);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(manager);
         adapter = new JieChildListAdapter2();
         rv.setAdapter(adapter);
         adapter.setOnItemAdapterListener(this);
+        if (position == stationlist.size() - 1) {
+            btn.setText("结束");
+            isJieShu = true;
+        }
     }
 
     @Override
@@ -72,10 +95,11 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
             Intent intent = new Intent(this, ShangcheActivity.class);
             intent.putExtras(bundle);
             startActivityForResult(intent, 1);
-        } if(staid.getType() == 2) {
+        }
+        if (staid.getType() == 2) {
             Intent intent = new Intent(this, XiacheActivity.class);
             intent.putExtras(bundle);
-            startActivityForResult(intent,2);
+            startActivityForResult(intent, 2);
         }
     }
 
@@ -94,6 +118,20 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
 
                 ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + "下车");
             }
+        }
+    }
+
+    @OnClick(R.id.btn_fache)
+    public void onClick(View view) {
+        if (isJieShu){
+            ToastUtil.show("结束了");
+            sp.setboolean(Keyword.BEGIN,false);
+            this.finish();
+        } else {
+            position++;
+            sp.setInt(Keyword.THISSATION, position);
+            sp.setboolean(Keyword.ISDAOZHAN, true);
+            this.finish();
         }
     }
 }

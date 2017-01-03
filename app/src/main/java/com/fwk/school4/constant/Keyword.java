@@ -108,4 +108,6 @@ public class Keyword {
     public static final String MAPLIST = "MAPLIST";//分组之后的map
     public static final String SELECTSTA = "SELECTSTA";//有上车的站点
 
+    public static final String GETSJTIME = "GETSJTIME";//实际到站时间
+
 }

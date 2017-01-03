@@ -18,10 +18,12 @@ import com.fwk.school4.MyApp;
 import com.fwk.school4.R;
 import com.fwk.school4.constant.Keyword;
 import com.fwk.school4.listener.DaoZhanListener;
+import com.fwk.school4.model.StaBean;
 import com.fwk.school4.model.StationBean;
 import com.fwk.school4.utils.SharedPreferencesUtils;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by fanwenke on 16/12/7.
@@ -32,9 +34,10 @@ public class MapRecyclerViewAdapter extends BaseRecyclerAdapter implements View.
     private Context mContext;
     private SharedPreferencesUtils sp;
     private List<StationBean.RerurnValueBean> list;
-    private List<Integer> childCount;
+    private Map<String,List<StaBean>> map;
     private DisplayMetrics display;
     private int stationPosition;
+    private List<String> times;
 
     DaoZhanListener listener;
 
@@ -42,13 +45,15 @@ public class MapRecyclerViewAdapter extends BaseRecyclerAdapter implements View.
         this.listener = listener;
     }
 
-    public MapRecyclerViewAdapter(DisplayMetrics display, int stationPosition) {
+    public MapRecyclerViewAdapter(DisplayMetrics display, int stationPosition, List<String> times) {
         this.display = display;
         this.stationPosition = stationPosition;
+        this.times = times;
         sp = new SharedPreferencesUtils();
         list = (List<StationBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_STATION_LIST);
-        childCount = (List<Integer>) sp.queryForSharedToObject(Keyword.CHILDCOUNT);
+        map = (Map<String, List<StaBean>>) sp.queryForSharedToObject(Keyword.MAPLIST);
     }
+
 
     @Override
     public ClickableViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -65,17 +70,16 @@ public class MapRecyclerViewAdapter extends BaseRecyclerAdapter implements View.
     @Override
     public void onBindViewHolder(ClickableViewHolder holder, int position) {
         if (holder instanceof MapViewHolder) {
-            String str = String.format(mContext.getString(R.string.station_count), 0, childCount.get(position));
-            String str1 = String.format(mContext.getString(R.string.station_shangcherenshu),0,2);
+            String str1 = String.format(mContext.getString(R.string.station_shangcherenshu),0,getnumber());
+            String str2 = String.format(mContext.getString(R.string.station_xiacherenshu),0,2);
             MapViewHolder viewHolder = (MapViewHolder) holder;
             setLayoutParams(viewHolder, 0.95f);
 
             viewHolder.name.setText(list.get(position).getStationName());
             viewHolder.daozhan.setVisibility(View.GONE);
-            viewHolder.count.setText(str);
             viewHolder.daozhan.setOnClickListener(this);
             viewHolder.ysc.setText(str1);
-            viewHolder.yxc.setText(str1);
+            viewHolder.yxc.setText(str2);
             AnimationSet set = new AnimationSet(true);
             AlphaAnimation animation = new AlphaAnimation(1, 0.2f);
             animation.setRepeatCount(Animation.INFINITE);
@@ -94,14 +98,18 @@ public class MapRecyclerViewAdapter extends BaseRecyclerAdapter implements View.
             if (position <= stationPosition) {
                 viewHolder.ring.setImageResource(R.drawable.ring2);
                 viewHolder.start.setBackgroundColor(0xff669900);
+                viewHolder.ysc.setVisibility(View.VISIBLE);
+                viewHolder.yxc.setVisibility(View.VISIBLE);
             }
             if (position < stationPosition){
                 viewHolder.end.setBackgroundColor(0xff669900);
+                viewHolder.sjsj.setVisibility(View.VISIBLE);
+                viewHolder.sjsj.setText(times.get(position));
             }
             if (stationPosition == position){
                 viewHolder.daozhan.setVisibility(View.VISIBLE);
             }
-            viewHolder.sjsj.setText("10:30");
+
         }
         super.onBindViewHolder(holder, position);
     }
@@ -116,10 +124,10 @@ public class MapRecyclerViewAdapter extends BaseRecyclerAdapter implements View.
 
         private View start, end;
         private ImageView ring;
-        private TextView name, count, ysc, yxc, sjsj;
+        private TextView name, ysc, yxc, sjsj;
         private CardView cardView;
         private RelativeLayout left;
-        private Button daozhan;
+        private TextView daozhan;
 
         public MapViewHolder(View itemView) {
             super(itemView);
@@ -128,7 +136,6 @@ public class MapRecyclerViewAdapter extends BaseRecyclerAdapter implements View.
             ring = $(R.id.ring);
             name = $(R.id.tx_name);
             cardView = $(R.id.cardview);
-            count = $(R.id.tv_count);
             left = $(R.id.rl_left);
             daozhan = $(R.id.btn_daozhan);
 
@@ -156,5 +163,13 @@ public class MapRecyclerViewAdapter extends BaseRecyclerAdapter implements View.
     public static int dp2px(float dpValue) {
         final float scale = MyApp.getContext().getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
+    }
+
+    private int getnumber(){
+        List<StaBean> list1 = map.get(list.get(stationPosition).getStationId() + "01");
+        if (list1 != null){
+            return list1.size();
+        }
+        return 0;
     }
 }
