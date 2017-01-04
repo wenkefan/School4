@@ -25,6 +25,7 @@ import com.fwk.school4.ui.adapter.MapRecyclerViewAdapter;
 import com.fwk.school4.utils.GetDateTime;
 import com.fwk.school4.utils.LogUtils;
 import com.fwk.school4.utils.SharedPreferencesUtils;
+import com.fwk.school4.utils.Stationutil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +112,7 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
         }
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
-        adapter = new MapRecyclerViewAdapter(display, 0, times);
+        adapter = new MapRecyclerViewAdapter(display, stationPosition, times);
         mRecyclerView.setAdapter(adapter);
         adapter.setOnItemListener(this);
         adapter.setOnClickListener(this);
@@ -179,31 +180,35 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
     public void OnClickListener(int position) {
         setSJTime();
         int location = 0;
-        List<Integer> childCount = (List<Integer>) sp.queryForSharedToObject(Keyword.CHILDCOUNT);
-        for (int i = 0; i < position; i++) {
-            location += childCount.get(i);
-        }
+        Stationutil stationutil =  Stationutil.newInstance();
+        stationutil.JumpPosition(position);
         Intent intent = new Intent(this, SongChildListActivity2.class);
         intent.putExtra(Keyword.JUMPPOSITION, location);
         intent.putExtra(Keyword.STATIONPOSITION, position);
         startActivity(intent);
     }
+
     /**
      * 记录实际到站时间
      */
-    private void setSJTime(){
+    private void setSJTime() {
         int H = GetDateTime.getH();
         int M = GetDateTime.getM();
-        String Hh = "00";
-        String Mm = "00";
-        if (H < 10){
+        String Hh;
+        String Mm;
+        if (H < 10) {
             Hh = "0" + H;
+        } else {
+            Hh = H + "";
         }
-        if (M < 10){
+
+        if (M < 10) {
             Mm = "0" + M;
+        } else {
+            Mm = M + "";
         }
-        String time = Hh + Mm;
+        String time = Hh + ":" + Mm;
         times.add(time);
-        sp.saveToShared(Keyword.GETSJTIME,times);
+        sp.saveToShared(Keyword.GETSJTIME, times);
     }
 }
