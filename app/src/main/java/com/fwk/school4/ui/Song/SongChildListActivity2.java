@@ -40,7 +40,7 @@ public class SongChildListActivity2 extends BasaActivity implements JieChildList
     RecyclerView rv;
     @InjectView(R.id.btn_fache)
     Button btn;
-
+    private String[] askForLeaveStatus = new String[]{"已上车", "病假", "事假", "家长接送"};
     private LinearLayoutManager manager;
     private JieChildListAdapter2 adapter;
     private SharedPreferencesUtils sp = new SharedPreferencesUtils();
@@ -113,11 +113,22 @@ public class SongChildListActivity2 extends BasaActivity implements JieChildList
             if (requestCode == 1) {
                 //上车重新分组
                 int position = data.getIntExtra(Keyword.SP_SELECT_ID, 0);
-                ChildData.setSongData(map, staBean, mItem, position);
+                if (map.get(staBean.getStrid()).get(mItem).getSelectid() == position) {
+                    ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + askForLeaveStatus[position - 1]);
+                } else {
+                    ChildData.setJieData(map, staBean, mItem, position);
+                    adapter.getData();
+                    adapter.notifyDataSetChanged();
+                }
+            } else if (requestCode == 2) {
+                //下车重新分组
+                int postion = data.getIntExtra(Keyword.SP_SELECT_ID, 0);
+                if (ChildData.setXiache(map, staBean, mItem, postion) == 0) {
+                    ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + "已下车");
+                    return;
+                }
                 adapter.getData();
                 adapter.notifyDataSetChanged();
-            } else if (requestCode == 2) {
-                //下车
                 ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + "下车");
             }
         }

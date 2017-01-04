@@ -40,9 +40,12 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
     @InjectView(R.id.btn_fache)
     Button btn;
 
+    private String[] askForLeaveStatus = new String[]{"已上车", "病假", "事假", "家长接送"};
+
     private LinearLayoutManager manager;
     private JieChildListAdapter2 adapter;
-    private SharedPreferencesUtils sp = new SharedPreferencesUtils();;
+    private SharedPreferencesUtils sp = new SharedPreferencesUtils();
+    ;
     private Map<String, List<ChildBean.RerurnValueBean>> map;//幼儿map
     private StaBean staBean;//选中幼儿所在的站点
     private int mItem;//站点中幼儿的位置数
@@ -110,12 +113,22 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
             if (requestCode == 1) {
                 //上车重新分组
                 int position = data.getIntExtra(Keyword.SP_SELECT_ID, 0);
-                ChildData.setJieData(map, staBean, mItem, position);
-                adapter.getData();
-                adapter.notifyDataSetChanged();
+                if (map.get(staBean.getStrid()).get(mItem).getSelectid() == position) {
+                    ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + askForLeaveStatus[position - 1]);
+                } else {
+                    ChildData.setJieData(map, staBean, mItem, position);
+                    adapter.getData();
+                    adapter.notifyDataSetChanged();
+                }
             } else if (requestCode == 2) {
                 //下车重新分组
-
+                int postion = data.getIntExtra(Keyword.SP_SELECT_ID,0);
+                if (ChildData.setXiache(map, staBean, mItem, postion) == 0){
+                    ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + "已下车");
+                    return;
+                }
+                adapter.getData();
+                adapter.notifyDataSetChanged();
                 ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + "下车");
             }
         }
@@ -123,9 +136,9 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
 
     @OnClick(R.id.btn_fache)
     public void onClick(View view) {
-        if (isJieShu){
+        if (isJieShu) {
             ToastUtil.show("结束了");
-            sp.setboolean(Keyword.BEGIN,false);
+            sp.setboolean(Keyword.BEGIN, false);
             this.finish();
         } else {
             position++;

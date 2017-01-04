@@ -60,7 +60,7 @@ public class ChildData {
                         break;
                     }
                 }
-                if (!flag){
+                if (!flag) {
                     bean.add(station);
                 }
             } else {
@@ -75,6 +75,7 @@ public class ChildData {
         sp.saveToShared(Keyword.SELECTSTA, bean);
         sp.saveToShared(Keyword.MAPLIST, map);
     }
+
     /**
      * 接幼儿
      * <p>
@@ -110,7 +111,8 @@ public class ChildData {
             List<ChildBean.RerurnValueBean> list = map.get(strId);
             if (list == null) {
                 list = new ArrayList<>();
-                list.add(map.get(staBean.getStrid()).get(mItem));
+                ChildBean.RerurnValueBean valueBean = map.get(staBean.getStrid()).get(mItem);
+                list.add(setNew(valueBean));
                 for (int i = 0; i < bean.size(); i++) {
                     if (bean.get(i).getId() == station.getId()) {
                         bean.add(i + 1, station);
@@ -118,11 +120,12 @@ public class ChildData {
                         break;
                     }
                 }
-                if (!flag){
+                if (!flag) {
                     bean.add(station);
                 }
             } else {
-                list.add(map.get(staBean.getStrid()).get(mItem));
+                ChildBean.RerurnValueBean valueBean = map.get(staBean.getStrid()).get(mItem);
+                list.add(setNew(valueBean));
             }
             map.put(strId, list);
 
@@ -132,5 +135,38 @@ public class ChildData {
         map.get(staBean.getStrid()).get(mItem).setSelectid(position);
         sp.saveToShared(Keyword.SELECTSTA, bean);
         sp.saveToShared(Keyword.MAPLIST, map);
+    }
+
+    public static int setXiache(Map<String, List<ChildBean.RerurnValueBean>> map, StaBean staBean, int mItem, int position) {
+        if (map.get(staBean.getStrid()).get(mItem).getSelectid() == position) {
+            return 0;
+        }
+        map.get(staBean.getStrid()).get(mItem).setSelectid(position);
+        sp.saveToShared(Keyword.MAPLIST, map);
+        return 1;
+    }
+
+    public static ChildBean.RerurnValueBean setNew(ChildBean.RerurnValueBean valueBean) {
+        ChildBean.RerurnValueBean valueBean1 = new ChildBean.RerurnValueBean();
+        valueBean1.setSelectid(valueBean.getSelectid());
+        valueBean1.setChildId(valueBean.getChildId());
+        valueBean1.setChildName(valueBean.getChildName());
+        valueBean1.setConnectEndStation(valueBean.getConnectEndStation());
+        valueBean1.setConnectLineId(valueBean.getConnectLineId());
+        valueBean1.setConnectStation(valueBean.getConnectStation());
+        valueBean1.setFatherName(valueBean.getFatherName());
+        valueBean1.setFatherPhone(valueBean.getFatherPhone());
+        valueBean1.setIsDU(valueBean.getIsDU());
+        valueBean1.setMotherName(valueBean.getMotherName());
+        valueBean1.setMotherPhone(valueBean.getMotherPhone());
+        valueBean1.setOperation(valueBean.getisOperation());
+        valueBean1.setOrganizationId(valueBean.getOrganizationId());
+        valueBean1.setSACardNo(valueBean.getSACardNo());
+        valueBean1.setSendLineId(valueBean.getSendLineId());
+        valueBean1.setSendStartStation(valueBean.getSendStartStation());
+        valueBean1.setSendStation(valueBean.getSendStation());
+        valueBean1.setTeacherName(valueBean.getTeacherName());
+        valueBean1.setTeacherphone(valueBean.getTeacherphone());
+        return valueBean1;
     }
 }
