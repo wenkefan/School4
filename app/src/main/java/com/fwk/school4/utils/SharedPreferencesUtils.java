@@ -71,5 +71,8 @@ public class SharedPreferencesUtils {
         return sp.getBoolean(key,false);
     }
 
-
+    public void removData(){
+        editor.clear();
+        editor.commit();
+    }
 }

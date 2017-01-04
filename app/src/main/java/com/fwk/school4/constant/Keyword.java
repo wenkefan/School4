@@ -6,6 +6,7 @@ package com.fwk.school4.constant;
 public class Keyword {
     //SP的key
     public static final String APPCONTEXT = "APPCONTEXT";
+    public static final String SPLOGIN = "SPLOGIN";
 
     /**-----------------------Login-----------------------**/
     //username

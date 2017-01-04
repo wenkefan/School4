@@ -1,12 +1,17 @@
 package com.fwk.school4.constant;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+
+import com.fwk.school4.MyApp;
 
 /**
  * Created by fanwenke on 16/8/16.
  */
-public class SpLogin extends Bean {
-
+public class SpLogin {
+    public static final SharedPreferences SP = MyApp.getContext()
+            .getSharedPreferences(Keyword.SPLOGIN, Context.MODE_PRIVATE);
     /**
      * 保存登录信息
      *
