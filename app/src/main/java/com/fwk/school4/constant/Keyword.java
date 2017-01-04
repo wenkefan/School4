@@ -110,5 +110,9 @@ public class Keyword {
     public static final String SELECTSTA = "SELECTSTA";//有上车的站点
 
     public static final String GETSJTIME = "GETSJTIME";//实际到站时间
-
+    /**
+     * 保存运行状态
+     */
+    public static final String NEXTSTANAME = "NEXTSTANAME";//保存下一站名称
+    public static final String NEXTTIME = "NEXTTIME";//保存预计到站时间
 }

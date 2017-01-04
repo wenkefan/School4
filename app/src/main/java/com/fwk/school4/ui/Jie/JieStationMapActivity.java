@@ -26,6 +26,7 @@ import com.fwk.school4.utils.GetDateTime;
 import com.fwk.school4.utils.LogUtils;
 import com.fwk.school4.utils.SharedPreferencesUtils;
 import com.fwk.school4.utils.Stationutil;
+import com.fwk.school4.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +68,7 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
     private int stationPosition = 0;
 
     private List<String> times;
+
     @Override
     public int getLayoutId() {
         return R.layout.station_map_activity2;
@@ -76,7 +78,7 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
     protected void onResume() {
         super.onResume();
         boolean is = sp.getBoolean(Keyword.ISDAOZHAN);
-        if (!sp.getBoolean(Keyword.BEGIN)){
+        if (!sp.getBoolean(Keyword.BEGIN)) {
             this.finish();
             return;
         }
@@ -85,7 +87,7 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
             setTitleNemaTime();
             adapter.setPostion(stationPosition);
             adapter.notifyDataSetChanged();
-            sp.setboolean(Keyword.ISDAOZHAN,false);
+            sp.setboolean(Keyword.ISDAOZHAN, false);
         }
     }
 
@@ -93,13 +95,19 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
     public void init() {
         title.setText(getResources().getString(R.string.map_tltile));
         sp = new SharedPreferencesUtils();
-        initData();
-    }
-
-    private void initData() {//初始化数据
-        list = (List<BanciBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_BANCI_LIST);
+        display = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(display);
         Intent intent = getIntent();
         int position = intent.getIntExtra(Keyword.POTIONIT, 0);
+        if (position == -1) {
+            setData();
+        } else {
+            initData(position);
+        }
+    }
+
+    private void initData(int position) {//初始化数据
+        list = (List<BanciBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_BANCI_LIST);
 
         bean = list.get(position);
         //站点url
@@ -111,16 +119,23 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
         staionNetWork.setUrl(Keyword.FLAGSTATION, url, StationBean.class);
     }
 
+    private void setData() {//继续运行加载数据
+        stationPosition = sp.getInt(Keyword.THISSATION);
+        nextName.setText(sp.getString(Keyword.NEXTSTANAME));
+        yjTime.setText(sp.getString(Keyword.NEXTTIME));
+        recyclerInit();
+    }
+
     private void recyclerInit() {
         times = (List<String>) sp.queryForSharedToObject(Keyword.GETSJTIME);
-        if (times == null){
+        if (times == null) {
             times = new ArrayList<>();
         }
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
         display = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(display);
-        adapter = new MapRecyclerViewAdapter(display, stationPosition,times);
+        adapter = new MapRecyclerViewAdapter(display, stationPosition, times);
         mRecyclerView.setAdapter(adapter);
         adapter.setOnItemListener(this);
         adapter.setOnClickListener(this);
@@ -185,13 +200,17 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
                 (List<StationBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_STATION_LIST);
         nextName.setText(stationList.get(stationPosition).getStationName());
         yjTime.setText(GetDateTime.getYJTime(stationList.get(stationPosition).getDuration()));
+
+        sp.setString(Keyword.NEXTSTANAME, stationList.get(stationPosition).getStationName());
+        sp.setString(Keyword.NEXTTIME, GetDateTime.getYJTime(stationList.get(stationPosition).getDuration()));
+
     }
 
     @Override
     public void OnClickListener(int position) {
         setSJTime();
         int location = 0;
-        Stationutil stationutil =  Stationutil.newInstance();
+        Stationutil stationutil = Stationutil.newInstance();
         stationutil.JumpPosition(position);
         Intent intent = new Intent(this, JieChildListActivity2.class);
         intent.putExtra(Keyword.JUMPPOSITION, location);
@@ -202,24 +221,24 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
     /**
      * 记录实际到站时间
      */
-    private void setSJTime(){
+    private void setSJTime() {
         int H = GetDateTime.getH();
         int M = GetDateTime.getM();
         String Hh = "00";
         String Mm = "00";
-        if (H < 10){
+        if (H < 10) {
             Hh = "0" + H;
-        }else {
+        } else {
             Hh = H + "";
         }
 
-        if (M < 10){
+        if (M < 10) {
             Mm = "0" + M;
-        }else {
+        } else {
             Mm = M + "";
         }
         String time = Hh + ":" + Mm;
         times.add(time);
-        sp.saveToShared(Keyword.GETSJTIME,times);
+        sp.saveToShared(Keyword.GETSJTIME, times);
     }
 }

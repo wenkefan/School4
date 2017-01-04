@@ -26,6 +26,7 @@ import com.fwk.school4.utils.GetDateTime;
 import com.fwk.school4.utils.LogUtils;
 import com.fwk.school4.utils.SharedPreferencesUtils;
 import com.fwk.school4.utils.Stationutil;
+import com.fwk.school4.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,11 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
     @InjectView(R.id.tv_main_station_time)
     TextView mStationTime;
 
+    @InjectView(R.id.tv_next_name)
+    TextView nextName;
+    @InjectView(R.id.tv_yjtiem)
+    TextView yjTime;
+
     private MapRecyclerViewAdapter adapter;
 
     private SharedPreferencesUtils sp;
@@ -61,16 +67,23 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
 
     @Override
     public int getLayoutId() {
-        return R.layout.station_map_activity;
+        return R.layout.station_map_activity2;
     }
 
     @Override
     public void init() {
         title.setText(getResources().getString(R.string.map_tltile));
         sp = new SharedPreferencesUtils();
-        initData();
         display = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(display);
+        Intent intent = getIntent();
+        int position = intent.getIntExtra(Keyword.POTIONIT, 0);
+        if (position == -1){
+            setData();
+        } else {
+
+            initData(position);
+        }
     }
 
     @Override
@@ -90,11 +103,8 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
         }
     }
 
-    private void initData() {//初始化数据
+    private void initData(int position) {//初始化数据
         list = (List<BanciBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_BANCI_LIST);
-        Intent intent = getIntent();
-        int position = intent.getIntExtra(Keyword.POTIONIT, 0);
-
         bean = list.get(position);
         //站点url
         String url = String.format(HTTPURL.API_ZHANDIAN, SpLogin.getKgId(),
@@ -103,6 +113,13 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
         StaionNetWork staionNetWork = StaionNetWork.newInstance(this);
         staionNetWork.setNetWorkListener(this);
         staionNetWork.setUrl(Keyword.FLAGSTATION, url, StationBean.class);
+    }
+
+    private void setData() {//继续运行加载数据
+        stationPosition = sp.getInt(Keyword.THISSATION);
+        nextName.setText(sp.getString(Keyword.NEXTSTANAME));
+        yjTime.setText(sp.getString(Keyword.NEXTTIME));
+        recyclerInit();
     }
 
     private void recyclerInit() {
@@ -172,15 +189,17 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
     private void setTitleNemaTime() {
         List<StationBean.RerurnValueBean> stationList =
                 (List<StationBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_STATION_LIST);
-        mStationNaem.setText(stationList.get(stationPosition).getStationName());
-        mStationTime.setText(GetDateTime.getYJTime(stationList.get(stationPosition).getDuration()));
+        nextName.setText(stationList.get(stationPosition).getStationName());
+        yjTime.setText(GetDateTime.getYJTime(stationList.get(stationPosition).getDuration()));
+        sp.setString(Keyword.NEXTSTANAME, stationList.get(stationPosition).getStationName());
+        sp.setString(Keyword.NEXTTIME, GetDateTime.getYJTime(stationList.get(stationPosition).getDuration()));
     }
 
     @Override
     public void OnClickListener(int position) {
         setSJTime();
         int location = 0;
-        Stationutil stationutil =  Stationutil.newInstance();
+        Stationutil stationutil = Stationutil.newInstance();
         stationutil.JumpPosition(position);
         Intent intent = new Intent(this, SongChildListActivity2.class);
         intent.putExtra(Keyword.JUMPPOSITION, location);

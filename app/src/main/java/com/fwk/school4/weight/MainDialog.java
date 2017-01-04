@@ -124,7 +124,7 @@ public class MainDialog {
                     //送幼儿
                     intent = new Intent(context, SongStationMapActivity.class);
                 }
-
+                intent.putExtra(Keyword.POTIONIT, -1);
                 context.startActivity(intent);
                 context.finish();
                 dialogInterface.dismiss();
