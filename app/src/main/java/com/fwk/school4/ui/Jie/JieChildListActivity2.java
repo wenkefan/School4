@@ -2,6 +2,8 @@ package com.fwk.school4.ui.Jie;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -10,14 +12,21 @@ import android.widget.TextView;
 
 import com.fwk.school4.R;
 import com.fwk.school4.constant.Keyword;
+import com.fwk.school4.constant.SpLogin;
+import com.fwk.school4.listener.NetWorkListener;
 import com.fwk.school4.model.ChildBean;
 import com.fwk.school4.model.StaBean;
 import com.fwk.school4.model.StationBean;
+import com.fwk.school4.model.StationFADAOBean;
+import com.fwk.school4.network.HTTPURL;
+import com.fwk.school4.network.api.CarFCNetWork;
 import com.fwk.school4.ui.BasaActivity;
 import com.fwk.school4.ui.ShangcheActivity;
 import com.fwk.school4.ui.XiacheActivity;
 import com.fwk.school4.ui.adapter.JieChildListAdapter2;
 import com.fwk.school4.utils.ChildData;
+import com.fwk.school4.utils.GetDateTime;
+import com.fwk.school4.utils.LogUtils;
 import com.fwk.school4.utils.SharedPreferencesUtils;
 import com.fwk.school4.utils.ToastUtil;
 
@@ -31,7 +40,7 @@ import butterknife.OnClick;
  * Created by fanwenke on 16/12/23.
  */
 
-public class JieChildListActivity2 extends BasaActivity implements JieChildListAdapter2.OnItemAdapterListener {
+public class JieChildListActivity2 extends BasaActivity implements JieChildListAdapter2.OnItemAdapterListener, NetWorkListener {
 
     @InjectView(R.id.title_tv)
     TextView title;
@@ -137,14 +146,44 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
     @OnClick(R.id.btn_fache)
     public void onClick(View view) {
         if (isJieShu) {
+            /**
+             * 发车字段为：班次编号、kgid、发车时间、类型(1发车、2停车)
+             * 停车字段为：派车单号、kgid、发车时间、类型(1发车、2停车)
+             */
+//            String url = String.format(HTTPURL.API_OPEN, bean.getBusScheduleId(), SpLogin.getKgId(), GetDateTime.getdatetime(), 1);
             ToastUtil.show("结束了");
             sp.setboolean(Keyword.BEGIN, false);
             this.finish();
         } else {
-            position++;
-            sp.setInt(Keyword.THISSATION, position);
-            sp.setboolean(Keyword.ISDAOZHAN, true);
-            this.finish();
+            showDialog();
+            String url = String.format(HTTPURL.API_PROCESS, SpLogin.getKgId(),stationlist.get(position).getStationId(),sp.getInt(Keyword.SP_PAICHEDANHAO),2, GetDateTime.getdatetime());
+            LogUtils.d("发车URL：" + url);
+            CarFCNetWork carFCNetWork = CarFCNetWork.newInstance(this);
+            carFCNetWork.setNetWorkListener(this);
+            carFCNetWork.setUrl(Keyword.FLAGDOWNCAR,url, StationFADAOBean.class);
         }
     }
+
+    @Override
+    public void NetWorkSuccess(int Flag) {
+        switch (Flag){
+            case Keyword.FLAGDOWNCAR:
+                handler.sendEmptyMessage(Keyword.FLAGDOWNCAR);
+                break;
+        }
+    }
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case Keyword.FLAGDOWNCAR:
+                    position++;
+                    sp.setInt(Keyword.THISSATION, position);
+                    sp.setboolean(Keyword.ISDAOZHAN, true);
+                    closeDialog();
+                    finish();
+                break;
+            }
+        }
+    };
 }

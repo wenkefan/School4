@@ -5,9 +5,9 @@ package com.fwk.school4.network;
  */
 public class HTTPURL {
     //private static final String API_URL = "http://192.168.1.168:8091/WebServices/MobileAttendanceService.ashx?Option=";
-//    private static final String API_URL = "http://manage.youery.com/WebServices/MobileAttendanceService.ashx?";
+    private static final String API_URL = "http://manage.youery.com/WebServices/MobileAttendanceService.ashx?";
     //    private static final String API_URL = "http://192.168.1.116:8083/WebServices/MobileAttendanceService.ashx?";
-    private static final String API_URL = "http://192.168.1.151:8081/WebServices/MobileAttendanceService.ashx?";
+//    private static final String API_URL = "http://192.168.1.151:8081/WebServices/MobileAttendanceService.ashx?";
 
     /**
      * 获取基础信息（线路列表、巴士列表、司机列表）

@@ -15,11 +15,15 @@ import com.fwk.school4.listener.DaoZhanListener;
 import com.fwk.school4.model.BanciBean;
 import com.fwk.school4.model.ChildBean;
 import com.fwk.school4.model.StationBean;
+import com.fwk.school4.model.StationFADAOBean;
 import com.fwk.school4.network.HTTPURL;
+import com.fwk.school4.network.api.CarFCNetWork;
 import com.fwk.school4.network.api.ChildNetWork;
 import com.fwk.school4.network.api.StaionNetWork;
 import com.fwk.school4.listener.NetWorkListener;
 import com.fwk.school4.ui.BasaActivity;
+import com.fwk.school4.ui.Jie.JieChildListActivity2;
+import com.fwk.school4.ui.Jie.JieStationMapActivity;
 import com.fwk.school4.ui.adapter.BaseRecyclerAdapter;
 import com.fwk.school4.ui.adapter.MapRecyclerViewAdapter;
 import com.fwk.school4.utils.GetDateTime;
@@ -146,6 +150,9 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
             case Keyword.FLAGCHILD:
                 handler.sendEmptyMessage(Keyword.FLAGCHILD);
                 break;
+            case Keyword.FLAGDOWNCAR:
+                handler.sendEmptyMessage(Keyword.FLAGDOWNCAR);
+                break;
         }
     }
 
@@ -167,6 +174,15 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
                 case Keyword.FLAGCHILD:
 
                     recyclerInit();
+
+                    break;
+                case Keyword.FLAGDOWNCAR:
+                    setSJTime();
+                    Stationutil stationutil = Stationutil.newInstance();
+                    Intent intent = new Intent(SongStationMapActivity.this, JieChildListActivity2.class);
+                    intent.putExtra(Keyword.JUMPPOSITION, stationutil.JumpPosition(Position));
+                    intent.putExtra(Keyword.STATIONPOSITION, Position);
+                    startActivity(intent);
 
                     break;
             }
@@ -194,17 +210,16 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
         sp.setString(Keyword.NEXTSTANAME, stationList.get(stationPosition).getStationName());
         sp.setString(Keyword.NEXTTIME, GetDateTime.getYJTime(stationList.get(stationPosition).getDuration()));
     }
-
+    private int Position;
     @Override
     public void OnClickListener(int position) {
-        setSJTime();
-        int location = 0;
-        Stationutil stationutil = Stationutil.newInstance();
-        stationutil.JumpPosition(position);
-        Intent intent = new Intent(this, SongChildListActivity2.class);
-        intent.putExtra(Keyword.JUMPPOSITION, location);
-        intent.putExtra(Keyword.STATIONPOSITION, position);
-        startActivity(intent);
+        List<StationBean.RerurnValueBean> stationList = (List<StationBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_STATION_LIST);
+        this.Position = position;
+        String url = String.format(HTTPURL.API_PROCESS,SpLogin.getKgId(),stationList.get(position).getStationId(),sp.getInt(Keyword.SP_PAICHEDANHAO),1,GetDateTime.getdatetime());
+        LogUtils.d("到站URL：" + url);
+        CarFCNetWork carFCNetWork = CarFCNetWork.newInstance(this);
+        carFCNetWork.setNetWorkListener(this);
+        carFCNetWork.setUrl(Keyword.FLAGDOWNCAR,url, StationFADAOBean.class);
     }
 
     /**
