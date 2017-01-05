@@ -68,6 +68,7 @@ public class LoginActivity extends AppCompatActivity implements OnSucceedListene
         okhttp.request(flag, url, cla);
     }
 
+
     @Override
     public <T> void OnSucceed(int flag, T cla, final String message) {
         if (cla != null){

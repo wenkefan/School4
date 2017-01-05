@@ -12,13 +12,15 @@ import com.fwk.school4.R;
 import com.fwk.school4.constant.Keyword;
 import com.fwk.school4.constant.SpLogin;
 import com.fwk.school4.listener.DaoZhanListener;
+import com.fwk.school4.listener.NetWorkListener;
 import com.fwk.school4.model.BanciBean;
 import com.fwk.school4.model.ChildBean;
 import com.fwk.school4.model.StationBean;
+import com.fwk.school4.model.StationFADAOBean;
 import com.fwk.school4.network.HTTPURL;
+import com.fwk.school4.network.api.CarFCNetWork;
 import com.fwk.school4.network.api.ChildNetWork;
 import com.fwk.school4.network.api.StaionNetWork;
-import com.fwk.school4.listener.NetWorkListener;
 import com.fwk.school4.ui.BasaActivity;
 import com.fwk.school4.ui.adapter.BaseRecyclerAdapter;
 import com.fwk.school4.ui.adapter.MapRecyclerViewAdapter;
@@ -26,7 +28,6 @@ import com.fwk.school4.utils.GetDateTime;
 import com.fwk.school4.utils.LogUtils;
 import com.fwk.school4.utils.SharedPreferencesUtils;
 import com.fwk.school4.utils.Stationutil;
-import com.fwk.school4.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,8 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
     private SharedPreferencesUtils sp;
 
     private List<BanciBean.RerurnValueBean> list;
+
+//    private List<StationBean.RerurnValueBean> stationList;
 
     private DisplayMetrics display;
 
@@ -108,7 +111,6 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
 
     private void initData(int position) {//初始化数据
         list = (List<BanciBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_BANCI_LIST);
-
         bean = list.get(position);
         //站点url
         String url = String.format(HTTPURL.API_ZHANDIAN, SpLogin.getKgId(),
@@ -153,6 +155,9 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
             case Keyword.FLAGCHILD:
                 handler.sendEmptyMessage(Keyword.FLAGCHILD);
                 break;
+            case Keyword.FLAGDOWNCAR:
+                handler.sendEmptyMessage(Keyword.FLAGDOWNCAR);
+                break;
         }
     }
 
@@ -174,6 +179,15 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
                 case Keyword.FLAGCHILD:
 
                     recyclerInit();
+
+                    break;
+                case Keyword.FLAGDOWNCAR:
+                    setSJTime();
+                    Stationutil stationutil = Stationutil.newInstance();
+                    Intent intent = new Intent(JieStationMapActivity.this, JieChildListActivity2.class);
+                    intent.putExtra(Keyword.JUMPPOSITION, stationutil.JumpPosition(Position));
+                    intent.putExtra(Keyword.STATIONPOSITION, Position);
+                    startActivity(intent);
 
                     break;
             }
@@ -206,16 +220,16 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
 
     }
 
+    private int Position;
     @Override
     public void OnClickListener(int position) {
-        setSJTime();
-        int location = 0;
-        Stationutil stationutil = Stationutil.newInstance();
-        stationutil.JumpPosition(position);
-        Intent intent = new Intent(this, JieChildListActivity2.class);
-        intent.putExtra(Keyword.JUMPPOSITION, location);
-        intent.putExtra(Keyword.STATIONPOSITION, position);
-        startActivity(intent);
+        List<StationBean.RerurnValueBean> stationList = (List<StationBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_STATION_LIST);
+        this.Position = position;
+        String url = String.format(HTTPURL.API_PROCESS,SpLogin.getKgId(),stationList.get(position).getStationId(),sp.getInt(Keyword.SP_PAICHEDANHAO),1,GetDateTime.getdatetime());
+        LogUtils.d("到站URL：" + url);
+        CarFCNetWork carFCNetWork = CarFCNetWork.newInstance(this);
+        carFCNetWork.setNetWorkListener(this);
+        carFCNetWork.setUrl(Keyword.FLAGDOWNCAR,url, StationFADAOBean.class);
     }
 
     /**
