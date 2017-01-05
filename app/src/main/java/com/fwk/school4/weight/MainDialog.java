@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 
 import com.fwk.school4.constant.Keyword;
+import com.fwk.school4.listener.FacheListener;
 import com.fwk.school4.model.BanciBean;
 import com.fwk.school4.ui.Jie.JieStationMapActivity;
 import com.fwk.school4.ui.MainActivity;
@@ -19,6 +20,10 @@ import com.fwk.school4.utils.SharedPreferencesUtils;
  */
 
 public class MainDialog {
+    static FacheListener listener;
+    public static void setBackListener(FacheListener listeners){
+        listener = listeners;
+    }
     /**
      * 是本人的班次  点击时的弹窗
      * @param context
@@ -50,9 +55,7 @@ public class MainDialog {
                     intent.putExtra(Keyword.POTIONIT, position);
 
                 }
-
-                context.startActivity(intent);
-                context.finish();
+                listener.BackListener(intent);
                 dialogInterface.dismiss();
             }
         });
