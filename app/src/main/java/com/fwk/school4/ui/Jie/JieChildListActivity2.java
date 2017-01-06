@@ -64,7 +64,7 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
     private StaBean staBean;//选中幼儿所在的站点
     private int mItem;//站点中幼儿的位置数
     private int position;
-    private int jumpPosition;
+    private boolean jumpPosition;
     private List<StationBean.RerurnValueBean> stationlist;
     private boolean isJieShu = false;
 
@@ -84,13 +84,14 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
 
         Intent intent = getIntent();
         position = intent.getIntExtra(Keyword.STATIONPOSITION, 0);
-        jumpPosition = intent.getIntExtra(Keyword.JUMPPOSITION, 0);
+        jumpPosition = intent.getBooleanExtra(Keyword.JUMPPOSITION,false );
 
         manager = new LinearLayoutManager(this);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(manager);
         adapter = new JieChildListAdapter2();
         rv.setAdapter(adapter);
+        rv.smoothScrollToPosition(position);
         adapter.setOnItemAdapterListener(this);
         if (position == stationlist.size() - 1) {
             btn.setText("结束");
@@ -119,15 +120,15 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
             startActivityForResult(intent, 2);
         }
     }
-
+    private int childPosition;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == 1) {
                 //上车重新分组
-                int position = data.getIntExtra(Keyword.SP_SELECT_ID, 0);
-                if (map.get(staBean.getStrid()).get(mItem).getSelectid() == position) {
+                childPosition = data.getIntExtra(Keyword.SP_SELECT_ID, 0);
+                if (map.get(staBean.getStrid()).get(mItem).getSelectid() == childPosition) {
                     ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + askForLeaveStatus[position - 1]);
                 } else {
                     showDialog();
@@ -140,7 +141,7 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
                             map.get(staBean.getStrid()).get(mItem).getChildId(),
                             staBean.getId(),
                             GetDateTime.getdatetime(),
-                            position,
+                            childPosition,
                             SpLogin.getKgId(),
                             1);
                     LogUtils.d("上车接口-----：" + url);
@@ -150,8 +151,8 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
                 }
             } else if (requestCode == 2) {
                 //下车重新分组
-                int postion = data.getIntExtra(Keyword.SP_SELECT_ID, 0);
-                if (ChildData.setXiache(map, staBean, mItem, postion) == 0) {
+                childPosition = data.getIntExtra(Keyword.SP_SELECT_ID, 0);
+                if (ChildData.setXiache(map, staBean, mItem, childPosition) == 0) {
                     ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + "已下车");
                     return;
                 }
@@ -164,7 +165,7 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
                         map.get(staBean.getStrid()).get(mItem).getChildId(),
                         staBean.getId(),
                         GetDateTime.getdatetime(),
-                        position,
+                        childPosition,
                         SpLogin.getKgId(),
                         2);
                 LogUtils.d("下车接口：" + url);
@@ -206,7 +207,7 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
                 break;
             case Keyword.FLAGENDDAOZHAN:
                 handler.sendEmptyMessage(Keyword.FLAGENDDAOZHAN);
-                break;
+               break;
             case Keyword.FLAGDOWNCAR:
                 handler.sendEmptyMessage(Keyword.FLAGDOWNCAR);
                 break;
@@ -219,12 +220,12 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            closeDialog();
             switch (msg.what) {
                 case Keyword.FLAGDAOZHAN:
                     position++;
                     sp.setInt(Keyword.THISSATION, position);
                     sp.setboolean(Keyword.ISDAOZHAN, true);
-                    closeDialog();
                     finish();
                     break;
                 case Keyword.FLAGENDDAOZHAN:
@@ -233,7 +234,7 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
                     finish();
                     break;
                 case Keyword.FLAGDOWNCAR:
-                    ChildData.setJieData(map, staBean, mItem, position);
+                    ChildData.setJieData(map, staBean, mItem, childPosition);
                     adapter.getData();
                     adapter.notifyDataSetChanged();
                     break;
@@ -245,4 +246,12 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
             }
         }
     };
+    @Override
+    public void onBackPressed() {
+        if (jumpPosition) {
+            ToastUtil.show("正在等待上车...");
+            return;
+        }
+        super.onBackPressed();
+    }
 }

@@ -62,7 +62,7 @@ public class SongChildListActivity2 extends BasaActivity implements JieChildList
     private StaBean staBean;//选中幼儿所在的站点
     private int mItem;//站点中幼儿的位置数
     private int position;
-    private int jumpPosition;
+    private boolean jumpPosition;
     private List<StationBean.RerurnValueBean> stationlist;
     private boolean isJieShu = false;
 
@@ -82,7 +82,7 @@ public class SongChildListActivity2 extends BasaActivity implements JieChildList
 
         Intent intent = getIntent();
         position = intent.getIntExtra(Keyword.STATIONPOSITION, 0);
-        jumpPosition = intent.getIntExtra(Keyword.JUMPPOSITION, 0);
+        jumpPosition = intent.getBooleanExtra(Keyword.JUMPPOSITION, false);
 
 
         manager = new LinearLayoutManager(this);
@@ -139,7 +139,7 @@ public class SongChildListActivity2 extends BasaActivity implements JieChildList
                             map.get(staBean.getStrid()).get(mItem).getChildId(),
                             staBean.getId(),
                             GetDateTime.getdatetime(),
-                            position,
+                            childPosition,
                             SpLogin.getKgId(),
                             1);
                     LogUtils.d("上车接口---：" + url);
@@ -164,7 +164,7 @@ public class SongChildListActivity2 extends BasaActivity implements JieChildList
                         map.get(staBean.getStrid()).get(mItem).getChildId(),
                         staBean.getId(),
                         GetDateTime.getdatetime(),
-                        position,
+                        childPosition,
                         SpLogin.getKgId(),
                         2);
                 LogUtils.d("下车接口：" + url);
@@ -244,4 +244,12 @@ public class SongChildListActivity2 extends BasaActivity implements JieChildList
             }
         }
     };
+
+    @Override
+    public void onBackPressed() {
+        if (jumpPosition) {
+            ToastUtil.show("正在等待上车...");
+        }
+        super.onBackPressed();
+    }
 }

@@ -177,7 +177,7 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
                     setSJTime();
                     Stationutil stationutil = Stationutil.newInstance();
                     Intent intent = new Intent(SongStationMapActivity.this, SongChildListActivity2.class);
-                    intent.putExtra(Keyword.JUMPPOSITION, stationutil.JumpPosition(Position));
+                    intent.putExtra(Keyword.JUMPPOSITION, true);
                     intent.putExtra(Keyword.STATIONPOSITION, Position);
                     startActivity(intent);
 
@@ -188,13 +188,8 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
 
     @Override
     public void setOnItemListener(int position, BaseRecyclerAdapter.ClickableViewHolder holder) {
-        int location = 0;
-        List<Integer> childCount = (List<Integer>) sp.queryForSharedToObject(Keyword.CHILDCOUNT);
-        for (int i = 0; i < position; i++) {
-            location += childCount.get(i);
-        }
         Intent intent = new Intent(this, SongChildListActivity2.class);
-        intent.putExtra(Keyword.JUMPPOSITION, location);
+        intent.putExtra(Keyword.JUMPPOSITION, false);
         intent.putExtra(Keyword.STATIONPOSITION, position);
         startActivity(intent);
     }
