@@ -1,7 +1,6 @@
 package com.fwk.school4.weight;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
@@ -12,7 +11,6 @@ import com.fwk.school4.model.BanciBean;
 import com.fwk.school4.ui.Jie.JieStationMapActivity;
 import com.fwk.school4.ui.MainActivity;
 import com.fwk.school4.ui.Song.SongStationMapActivity;
-import com.fwk.school4.utils.LogUtils;
 import com.fwk.school4.utils.SharedPreferencesUtils;
 
 /**
@@ -33,7 +31,7 @@ public class MainDialog {
      */
     public static void ShowJRBanci(final Activity context, String name, final int fangxiang,final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("提示").setMessage("是否发车班次：" + name);
+        builder.setTitle("提示").setMessage("\"" +name + "\"" + "是否发车班次：");
         builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -89,8 +87,7 @@ public class MainDialog {
 
                 }
 
-                context.startActivity(intent);
-                context.finish();
+                listener.BackListener(intent);
                 dialogInterface.dismiss();
             }
         });

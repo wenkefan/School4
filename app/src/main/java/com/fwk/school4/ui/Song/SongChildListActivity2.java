@@ -110,23 +110,23 @@ public class SongChildListActivity2 extends BasaActivity implements JieChildList
         if (staid.getType() == 1) {
             Intent intent = new Intent(this, ShangcheActivity.class);
             intent.putExtras(bundle);
-            startActivityForResult(intent, 1);
+            startActivityForResult(intent, 3);
         }
         if (staid.getType() == 2) {
             Intent intent = new Intent(this, XiacheActivity.class);
             intent.putExtras(bundle);
-            startActivityForResult(intent, 2);
+            startActivityForResult(intent, 4);
         }
     }
-
+    private int childPosition;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == 1) {
+            if (requestCode == 3) {
                 //上车重新分组
-                int position = data.getIntExtra(Keyword.SP_SELECT_ID, 0);
-                if (map.get(staBean.getStrid()).get(mItem).getSelectid() == position) {
+                childPosition = data.getIntExtra(Keyword.SP_SELECT_ID, 0);
+                if (map.get(staBean.getStrid()).get(mItem).getSelectid() == childPosition) {
                     ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + askForLeaveStatus[position - 1]);
                 } else {
                     showDialog();
@@ -142,16 +142,16 @@ public class SongChildListActivity2 extends BasaActivity implements JieChildList
                             position,
                             SpLogin.getKgId(),
                             1);
-                    LogUtils.d("上车接口：" + url);
+                    LogUtils.d("上车接口---：" + url);
                     DownCarNetWork downCarNetWork = DownCarNetWork.newInstance(this);
                     downCarNetWork.setNetWorkListener(this);
                     downCarNetWork.setUrl(Keyword.FLAGDOWNCAR,url, UpDownCar.class);
 
                 }
-            } else if (requestCode == 2) {
+            } else if (requestCode == 4) {
                 //下车重新分组
-                int postion = data.getIntExtra(Keyword.SP_SELECT_ID, 0);
-                if (ChildData.setXiache(map, staBean, mItem, postion) == 0) {
+                childPosition = data.getIntExtra(Keyword.SP_SELECT_ID, 0);
+                if (ChildData.setXiache(map, staBean, mItem, childPosition) == 0) {
                     ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + "已下车");
                     return;
                 }
@@ -232,7 +232,7 @@ public class SongChildListActivity2 extends BasaActivity implements JieChildList
                     finish();
                     break;
                 case Keyword.FLAGDOWNCAR:
-                    ChildData.setJieData(map, staBean, mItem, position);
+                    ChildData.setJieData(map, staBean, mItem, childPosition);
                     adapter.getData();
                     adapter.notifyDataSetChanged();
                     break;

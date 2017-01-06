@@ -143,7 +143,7 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
                             position,
                             SpLogin.getKgId(),
                             1);
-                    LogUtils.d("上车接口：" + url);
+                    LogUtils.d("上车接口-----：" + url);
                     DownCarNetWork downCarNetWork = DownCarNetWork.newInstance(this);
                     downCarNetWork.setNetWorkListener(this);
                     downCarNetWork.setUrl(Keyword.FLAGDOWNCAR,url, UpDownCar.class);

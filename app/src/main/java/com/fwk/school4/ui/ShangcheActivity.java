@@ -12,7 +12,6 @@ import com.fwk.school4.model.ChildBean;
 import com.fwk.school4.model.StationModeBean;
 import com.fwk.school4.ui.adapter.BaseRecyclerAdapter;
 import com.fwk.school4.ui.adapter.ShangCheRecyclerAdapter;
-import com.fwk.school4.utils.LogUtils;
 import com.fwk.school4.utils.SharedPreferencesUtils;
 import com.fwk.school4.weight.CenterItemDialog;
 
@@ -90,23 +89,10 @@ public class ShangcheActivity extends BasaActivity implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_confirm:
-//                if (isZhuangtai) {
                     Intent intent = new Intent();
                     intent.putExtra(Keyword.SP_SELECT_ID, SelectState);
-//                    isZhuangtai = false;
                     setResult(RESULT_OK, intent);
                     finish();
-//                } else {
-//                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//                    builder.setTitle("提示").setMessage("请选择-学生状态");
-//                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            dialogInterface.dismiss();
-//                        }
-//                    });
-//                    builder.create().show();
-//                }
                 break;
             case R.id.tv_ask_for_leave_status:
                 dialog.show();
@@ -151,22 +137,18 @@ public class ShangcheActivity extends BasaActivity implements View.OnClickListen
                 case 0:
                     //手动上下车
                     SelectState = ChildState1;
-//                    isZhuangtai = true;
                     break;
                 case 1:
                     //病假
                     SelectState = ChildState2;
-//                    isZhuangtai = true;
                     break;
                 case 2:
                     //事假
                     SelectState = ChildState3;
-//                    isZhuangtai = true;
                     break;
                 case 3:
                     //家长接送
                     SelectState = ChildState4;
-//                    isZhuangtai = true;
                     break;
                 default:
                     break;

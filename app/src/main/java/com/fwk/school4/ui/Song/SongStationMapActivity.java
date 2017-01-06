@@ -22,7 +22,6 @@ import com.fwk.school4.network.api.CarFCNetWork;
 import com.fwk.school4.network.api.ChildNetWork;
 import com.fwk.school4.network.api.StaionNetWork;
 import com.fwk.school4.ui.BasaActivity;
-import com.fwk.school4.ui.Jie.JieChildListActivity2;
 import com.fwk.school4.ui.adapter.BaseRecyclerAdapter;
 import com.fwk.school4.ui.adapter.MapRecyclerViewAdapter;
 import com.fwk.school4.utils.GetDateTime;
@@ -177,7 +176,7 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
                 case Keyword.FLAGFACHE:
                     setSJTime();
                     Stationutil stationutil = Stationutil.newInstance();
-                    Intent intent = new Intent(SongStationMapActivity.this, JieChildListActivity2.class);
+                    Intent intent = new Intent(SongStationMapActivity.this, SongChildListActivity2.class);
                     intent.putExtra(Keyword.JUMPPOSITION, stationutil.JumpPosition(Position));
                     intent.putExtra(Keyword.STATIONPOSITION, Position);
                     startActivity(intent);

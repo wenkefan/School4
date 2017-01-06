@@ -73,7 +73,6 @@ public class MainActivity extends BasaActivity implements NetWorkListener, BaseR
         adapter = new MainRecyclerViewAdapter();
         mRecyclerView.setAdapter(adapter);
         adapter.setOnItemListener(this);
-        LogUtils.d("time--" + GetDateTime.getdatetime());
     }
 
     public void requestBanci() {
