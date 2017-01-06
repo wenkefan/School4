@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.fwk.school4.R;
 import com.fwk.school4.constant.Keyword;
+import com.fwk.school4.constant.SpBanci;
 import com.fwk.school4.constant.SpLogin;
 import com.fwk.school4.listener.FacheListener;
 import com.fwk.school4.model.BanciBean;
@@ -120,6 +121,7 @@ public class MainActivity extends BasaActivity implements NetWorkListener, BaseR
 
         BanciBean.RerurnValueBean bean =
                 ((List<BanciBean.RerurnValueBean>) (sp.queryForSharedToObject(Keyword.SP_BANCI_LIST))).get(position);
+        SpBanci.save(bean.getBusScheduleId(),bean.getLineId(),bean.getAttendanceDirections());
         this.bean = bean;
         sp.setInt(Keyword.SP_ATTENDANCEDIRECTIONS, bean.getAttendanceDirections());
         if (bean.getOriginal()) {

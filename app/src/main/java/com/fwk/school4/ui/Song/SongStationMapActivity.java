@@ -12,6 +12,7 @@ import com.fwk.school4.R;
 import com.fwk.school4.constant.Keyword;
 import com.fwk.school4.constant.SpLogin;
 import com.fwk.school4.listener.DaoZhanListener;
+import com.fwk.school4.listener.NetWorkListener;
 import com.fwk.school4.model.BanciBean;
 import com.fwk.school4.model.ChildBean;
 import com.fwk.school4.model.StationBean;
@@ -20,17 +21,14 @@ import com.fwk.school4.network.HTTPURL;
 import com.fwk.school4.network.api.CarFCNetWork;
 import com.fwk.school4.network.api.ChildNetWork;
 import com.fwk.school4.network.api.StaionNetWork;
-import com.fwk.school4.listener.NetWorkListener;
 import com.fwk.school4.ui.BasaActivity;
 import com.fwk.school4.ui.Jie.JieChildListActivity2;
-import com.fwk.school4.ui.Jie.JieStationMapActivity;
 import com.fwk.school4.ui.adapter.BaseRecyclerAdapter;
 import com.fwk.school4.ui.adapter.MapRecyclerViewAdapter;
 import com.fwk.school4.utils.GetDateTime;
 import com.fwk.school4.utils.LogUtils;
 import com.fwk.school4.utils.SharedPreferencesUtils;
 import com.fwk.school4.utils.Stationutil;
-import com.fwk.school4.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,8 +148,8 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
             case Keyword.FLAGCHILD:
                 handler.sendEmptyMessage(Keyword.FLAGCHILD);
                 break;
-            case Keyword.FLAGDOWNCAR:
-                handler.sendEmptyMessage(Keyword.FLAGDOWNCAR);
+            case Keyword.FLAGFACHE:
+                handler.sendEmptyMessage(Keyword.FLAGFACHE);
                 break;
         }
     }
@@ -176,7 +174,7 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
                     recyclerInit();
 
                     break;
-                case Keyword.FLAGDOWNCAR:
+                case Keyword.FLAGFACHE:
                     setSJTime();
                     Stationutil stationutil = Stationutil.newInstance();
                     Intent intent = new Intent(SongStationMapActivity.this, JieChildListActivity2.class);
@@ -219,7 +217,7 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
         LogUtils.d("到站URL：" + url);
         CarFCNetWork carFCNetWork = CarFCNetWork.newInstance(this);
         carFCNetWork.setNetWorkListener(this);
-        carFCNetWork.setUrl(Keyword.FLAGDOWNCAR,url, StationFADAOBean.class);
+        carFCNetWork.setUrl(Keyword.FLAGFACHE,url, StationFADAOBean.class);
     }
 
     /**

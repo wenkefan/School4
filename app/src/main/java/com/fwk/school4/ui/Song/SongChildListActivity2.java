@@ -15,11 +15,16 @@ import com.fwk.school4.constant.Keyword;
 import com.fwk.school4.constant.SpLogin;
 import com.fwk.school4.listener.NetWorkListener;
 import com.fwk.school4.model.ChildBean;
+import com.fwk.school4.model.FristFaChe;
 import com.fwk.school4.model.StaBean;
 import com.fwk.school4.model.StationBean;
 import com.fwk.school4.model.StationFADAOBean;
+import com.fwk.school4.model.UpDownCar;
 import com.fwk.school4.network.HTTPURL;
-import com.fwk.school4.network.api.CarFCNetWork;
+import com.fwk.school4.network.api.CarDZNetWork;
+import com.fwk.school4.network.api.DownCarNetWork;
+import com.fwk.school4.network.api.EndNetWork;
+import com.fwk.school4.network.api.UpCarNetWork;
 import com.fwk.school4.ui.BasaActivity;
 import com.fwk.school4.ui.ShangcheActivity;
 import com.fwk.school4.ui.XiacheActivity;
@@ -124,9 +129,24 @@ public class SongChildListActivity2 extends BasaActivity implements JieChildList
                 if (map.get(staBean.getStrid()).get(mItem).getSelectid() == position) {
                     ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + askForLeaveStatus[position - 1]);
                 } else {
-                    ChildData.setJieData(map, staBean, mItem, position);
-                    adapter.getData();
-                    adapter.notifyDataSetChanged();
+                    showDialog();
+                    /**
+                     * 字段：派车单号、幼儿编号、站点、时间、状态、kgid、上下车类型（1、上车；2、下车）
+                     */
+                    String url = String.format(
+                            HTTPURL.API_STUDENT_OPEN_DOWN,
+                            sp.getInt(Keyword.SP_PAICHEDANHAO),
+                            map.get(staBean.getStrid()).get(mItem).getChildId(),
+                            staBean.getId(),
+                            GetDateTime.getdatetime(),
+                            position,
+                            SpLogin.getKgId(),
+                            1);
+                    LogUtils.d("上车接口：" + url);
+                    DownCarNetWork downCarNetWork = DownCarNetWork.newInstance(this);
+                    downCarNetWork.setNetWorkListener(this);
+                    downCarNetWork.setUrl(Keyword.FLAGDOWNCAR,url, UpDownCar.class);
+
                 }
             } else if (requestCode == 2) {
                 //下车重新分组
@@ -135,9 +155,22 @@ public class SongChildListActivity2 extends BasaActivity implements JieChildList
                     ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + "已下车");
                     return;
                 }
-                adapter.getData();
-                adapter.notifyDataSetChanged();
-                ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + "下车");
+                /**
+                 * 字段：派车单号、幼儿编号、站点、时间、状态、kgid、上下车类型（1、上车；2、下车）
+                 */
+                String url = String.format(
+                        HTTPURL.API_STUDENT_OPEN_DOWN,
+                        sp.getInt(Keyword.SP_PAICHEDANHAO),
+                        map.get(staBean.getStrid()).get(mItem).getChildId(),
+                        staBean.getId(),
+                        GetDateTime.getdatetime(),
+                        position,
+                        SpLogin.getKgId(),
+                        2);
+                LogUtils.d("下车接口：" + url);
+                UpCarNetWork upCarNetWork = UpCarNetWork.newInstance(this);
+                upCarNetWork.setNetWorkListener(this);
+                upCarNetWork.setUrl(Keyword.FLAGUPCAR,url, UpDownCar.class);
             }
         }
     }
@@ -149,38 +182,64 @@ public class SongChildListActivity2 extends BasaActivity implements JieChildList
              * 发车字段为：班次编号、kgid、发车时间、类型(1发车、2停车)
              * 停车字段为：派车单号、kgid、发车时间、类型(1发车、2停车)
              */
-//            String url = String.format(HTTPURL.API_OPEN, bean.getBusScheduleId(), SpLogin.getKgId(), GetDateTime.getdatetime(), 1);
-            ToastUtil.show("结束了");
-            sp.setboolean(Keyword.BEGIN, false);
-            this.finish();
+            showDialog();
+            String url = String.format(HTTPURL.API_OPEN, sp.getInt(Keyword.SP_PAICHEDANHAO), SpLogin.getKgId(), GetDateTime.getdatetime(), 2);
+            LogUtils.d("结束URL：" + url);
+            EndNetWork endNetWork = EndNetWork.newInstance(this);
+            endNetWork.setNetWorkListener(this);
+            endNetWork.setUrl(Keyword.FLAGENDDAOZHAN, url, FristFaChe.class);
         } else {
             showDialog();
             String url = String.format(HTTPURL.API_PROCESS, SpLogin.getKgId(),stationlist.get(position).getStationId(),sp.getInt(Keyword.SP_PAICHEDANHAO),2, GetDateTime.getdatetime());
             LogUtils.d("发车URL：" + url);
-            CarFCNetWork carFCNetWork = CarFCNetWork.newInstance(this);
-            carFCNetWork.setNetWorkListener(this);
-            carFCNetWork.setUrl(Keyword.FLAGDOWNCAR,url, StationFADAOBean.class);
+            CarDZNetWork carDZNetWork = CarDZNetWork.newInstance(this);
+            carDZNetWork.setNetWorkListener(this);
+            carDZNetWork.setUrl(Keyword.FLAGDAOZHAN,url, StationFADAOBean.class);
         }
     }
 
     @Override
     public void NetWorkSuccess(int Flag) {
         switch (Flag){
+            case Keyword.FLAGDAOZHAN:
+                handler.sendEmptyMessage(Keyword.FLAGDAOZHAN);
+                break;
+            case Keyword.FLAGENDDAOZHAN:
+                handler.sendEmptyMessage(Keyword.FLAGENDDAOZHAN);
+                break;
             case Keyword.FLAGDOWNCAR:
                 handler.sendEmptyMessage(Keyword.FLAGDOWNCAR);
+                break;
+            case Keyword.FLAGUPCAR:
+                handler.sendEmptyMessage(Keyword.FLAGUPCAR);
                 break;
         }
     }
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
+            closeDialog();
             switch (msg.what){
-                case Keyword.FLAGDOWNCAR:
+                case Keyword.FLAGDAOZHAN:
                     position++;
                     sp.setInt(Keyword.THISSATION, position);
                     sp.setboolean(Keyword.ISDAOZHAN, true);
-                    closeDialog();
                     finish();
+                    break;
+                case Keyword.FLAGENDDAOZHAN:
+                    ToastUtil.show("结束了");
+                    sp.setboolean(Keyword.BEGIN, false);
+                    finish();
+                    break;
+                case Keyword.FLAGDOWNCAR:
+                    ChildData.setJieData(map, staBean, mItem, position);
+                    adapter.getData();
+                    adapter.notifyDataSetChanged();
+                    break;
+                case Keyword.FLAGUPCAR:
+                    adapter.getData();
+                    adapter.notifyDataSetChanged();
+                    ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + "下车");
                     break;
             }
         }

@@ -1,11 +1,9 @@
 package com.fwk.school4.ui;
 
-import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-
-import com.fwk.school4.weight.LoadingDialog;
 
 import butterknife.ButterKnife;
 
@@ -26,18 +24,23 @@ public abstract class BasaActivity extends AppCompatActivity {
     public abstract int getLayoutId();
     public abstract void init();
 
-    private Dialog dialog;
+    private ProgressDialog progressDialog;
     public void showDialog(){
-        if (dialog == null){
-            dialog = LoadingDialog.createLoadingDialog(this,"正在加载中...");
-            dialog.show();
+        if (progressDialog == null){
+
+            progressDialog = new ProgressDialog(this);
+
         }
+
+        progressDialog.setMessage("正在加载中...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
     }
 
     public void closeDialog(){
-        if (dialog != null){
-            dialog.dismiss();
-            dialog = null;
+        if (progressDialog != null){
+            progressDialog.dismiss();
+            progressDialog = null;
         }
     }
 }

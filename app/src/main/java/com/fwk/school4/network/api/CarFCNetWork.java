@@ -26,12 +26,12 @@ public class CarFCNetWork extends BaseNetWork {
 
     @Override
     public <T> void OnSucceed(int flag, T cla, final String message) {
-        if (flag == Keyword.FLAGDOWNCAR){
+        if (flag == Keyword.FLAGFACHE){
             if (cla != null){
 
                 StationFADAOBean fadaoBean = (StationFADAOBean) cla;
 
-                listener.NetWorkSuccess(Keyword.FLAGDOWNCAR);
+                listener.NetWorkSuccess(Keyword.FLAGFACHE);
             } else {
                 mActivity.runOnUiThread(new Runnable() {
                     @Override

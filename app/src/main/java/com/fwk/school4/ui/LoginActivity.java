@@ -1,5 +1,6 @@
 package com.fwk.school4.ui;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
@@ -53,11 +54,14 @@ public class LoginActivity extends AppCompatActivity implements OnSucceedListene
 
     @OnClick(R.id.btn_login)
     public void onClick() {
+        showDialog();
         username = etUserName.getText().toString().trim();
         password = etPassword.getText().toString().trim();
         if (DataVerifyUtils.VerifyData(username, password)) {
             String url = String.format(HTTPURL.API_LOGIN, username, password);
             require(LOGION, url, LoginBean.class);
+        }else {
+            closeDialog();
         }
     }
 
@@ -72,6 +76,7 @@ public class LoginActivity extends AppCompatActivity implements OnSucceedListene
     @Override
     public <T> void OnSucceed(int flag, T cla, final String message) {
         if (cla != null){
+            closeDialog();
             if (flag == LOGION){
                 loginBean = (LoginBean) cla;
                 if (loginBean.getRerurnValue() != null){
@@ -115,5 +120,25 @@ public class LoginActivity extends AppCompatActivity implements OnSucceedListene
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+    private ProgressDialog progressDialog;
+
+    private void showDialog(){
+        if (progressDialog == null){
+
+            progressDialog = new ProgressDialog(this);
+
+        }
+
+        progressDialog.setMessage("正在加载中...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+    }
+
+    private void closeDialog(){
+        if (progressDialog != null){
+            progressDialog.dismiss();
+            progressDialog = null;
+        }
     }
 }

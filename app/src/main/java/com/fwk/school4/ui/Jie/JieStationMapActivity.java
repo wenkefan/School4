@@ -155,8 +155,8 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
             case Keyword.FLAGCHILD:
                 handler.sendEmptyMessage(Keyword.FLAGCHILD);
                 break;
-            case Keyword.FLAGDOWNCAR:
-                handler.sendEmptyMessage(Keyword.FLAGDOWNCAR);
+            case Keyword.FLAGFACHE:
+                handler.sendEmptyMessage(Keyword.FLAGFACHE);
                 break;
         }
     }
@@ -181,7 +181,7 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
                     recyclerInit();
 
                     break;
-                case Keyword.FLAGDOWNCAR:
+                case Keyword.FLAGFACHE:
                     setSJTime();
                     Stationutil stationutil = Stationutil.newInstance();
                     Intent intent = new Intent(JieStationMapActivity.this, JieChildListActivity2.class);
@@ -229,7 +229,7 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
         LogUtils.d("到站URL：" + url);
         CarFCNetWork carFCNetWork = CarFCNetWork.newInstance(this);
         carFCNetWork.setNetWorkListener(this);
-        carFCNetWork.setUrl(Keyword.FLAGDOWNCAR,url, StationFADAOBean.class);
+        carFCNetWork.setUrl(Keyword.FLAGFACHE,url, StationFADAOBean.class);
     }
 
     /**

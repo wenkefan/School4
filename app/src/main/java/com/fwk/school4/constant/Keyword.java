@@ -83,8 +83,12 @@ public class Keyword {
     public static final int FLAGFIRSTFACHE = 600;//第一次发车
     public static final int FLAGENDDAOZHAN = 602;//结束
 
+    public static final int FLAGFACHE = 701;//发车
+    public static final int FLAGDAOZHAN = 702;//到站
+
+
     public static final int FLAGDOWNCAR = 1101;//上车
-    public static final int FLAGUPCAR = 1102;//上车
+    public static final int FLAGUPCAR = 1102;//下车
 
     public static final String STATIONIDLIST = "STATIONIDLIST";//站点ID list
     public static final String STAIDLIST = "STAIDLIST";//站点上下
