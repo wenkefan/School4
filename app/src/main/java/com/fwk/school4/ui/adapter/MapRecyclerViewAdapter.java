@@ -39,6 +39,10 @@ public class MapRecyclerViewAdapter extends BaseRecyclerAdapter implements View.
 
     DaoZhanListener listener;
 
+    private int shangcheNumber = 0;
+    private int xiacheNumber = 0;
+    private Map<Integer,Integer> shangche;
+    private Map<Integer,Integer> xiache;
     public void setOnClickListener(DaoZhanListener listener){
         this.listener = listener;
     }
@@ -50,6 +54,8 @@ public class MapRecyclerViewAdapter extends BaseRecyclerAdapter implements View.
         sp = new SharedPreferencesUtils();
         list = (List<StationBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_STATION_LIST);
         map = (Map<String, List<StaBean>>) sp.queryForSharedToObject(Keyword.MAPLIST);
+        shangche = (Map<Integer, Integer>) sp.queryForSharedToObject(Keyword.SHANGCHENUMBER);
+        xiache = (Map<Integer, Integer>) sp.queryForSharedToObject(Keyword.XIACHENUMBER);
     }
 
 
@@ -68,16 +74,12 @@ public class MapRecyclerViewAdapter extends BaseRecyclerAdapter implements View.
     @Override
     public void onBindViewHolder(ClickableViewHolder holder, int position) {
         if (holder instanceof MapViewHolder) {
-            String str1 = String.format(mContext.getString(R.string.station_shangcherenshu),0,getShangChenumber(list.get(position).getStationId()));
-            String str2 = String.format(mContext.getString(R.string.station_xiacherenshu),0,getXiaCheNumber(list.get(position).getStationId()));
             MapViewHolder viewHolder = (MapViewHolder) holder;
             setLayoutParams(viewHolder, 0.95f);
 
             viewHolder.name.setText(list.get(position).getStationName());
             viewHolder.daozhan.setVisibility(View.GONE);
             viewHolder.daozhan.setOnClickListener(this);
-            viewHolder.ysc.setText(str1);
-            viewHolder.yxc.setText(str2);
             AnimationSet set = new AnimationSet(true);
             AlphaAnimation animation = new AlphaAnimation(1, 0.2f);
             animation.setRepeatCount(Animation.INFINITE);
@@ -94,6 +96,22 @@ public class MapRecyclerViewAdapter extends BaseRecyclerAdapter implements View.
                 viewHolder.end.setVisibility(View.GONE);
             }
             if (position <= stationPosition) {
+                int shangcheN = 0;
+                try {
+                    shangcheN = shangche.get(list.get(position).getStationId());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                int xiacheN = 0;
+                try {
+                    xiacheN = xiache.get(list.get(position).getStationId());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                String str1 = String.format(mContext.getString(R.string.station_shangcherenshu),shangcheN,getShangChenumber(list.get(position).getStationId()));
+                String str2 = String.format(mContext.getString(R.string.station_xiacherenshu),xiacheN,getXiaCheNumber(list.get(position).getStationId()));
+                viewHolder.ysc.setText(str1);
+                viewHolder.yxc.setText(str2);
                 viewHolder.ring.setImageResource(R.drawable.ring2);
                 viewHolder.start.setBackgroundColor(0xff669900);
                 viewHolder.ysc.setVisibility(View.VISIBLE);
@@ -176,5 +194,12 @@ public class MapRecyclerViewAdapter extends BaseRecyclerAdapter implements View.
             return list1.size();
         }
         return 0;
+    }
+    public void setNumberSX(){
+        list = (List<StationBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_STATION_LIST);
+        map = (Map<String, List<StaBean>>) sp.queryForSharedToObject(Keyword.MAPLIST);
+        shangche = (Map<Integer, Integer>) sp.queryForSharedToObject(Keyword.SHANGCHENUMBER);
+        xiache = (Map<Integer, Integer>) sp.queryForSharedToObject(Keyword.XIACHENUMBER);
+        notifyDataSetChanged();
     }
 }

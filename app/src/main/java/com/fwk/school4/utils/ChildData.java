@@ -52,7 +52,8 @@ public class ChildData {
             List<ChildBean.RerurnValueBean> list = map.get(strId);
             if (list == null) {
                 list = new ArrayList<>();
-                list.add(map.get(staBean.getStrid()).get(mItem));
+                ChildBean.RerurnValueBean valueBean = map.get(staBean.getStrid()).get(mItem);
+                list.add(setNew(valueBean));
                 for (int i = 0; i < bean.size(); i++) {
                     if (bean.get(i).getId() == station.getId()) {
                         bean.add(i + 1, station);
@@ -64,7 +65,8 @@ public class ChildData {
                     bean.add(station);
                 }
             } else {
-                list.add(map.get(staBean.getStrid()).get(mItem));
+                ChildBean.RerurnValueBean valueBean = map.get(staBean.getStrid()).get(mItem);
+                list.add(setNew(valueBean));
             }
 
             map.put(strId, list);

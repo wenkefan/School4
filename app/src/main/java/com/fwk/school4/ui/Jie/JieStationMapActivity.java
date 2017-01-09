@@ -54,8 +54,8 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
     TextView yjTime;
     @InjectView(R.id.tv_count)
     TextView renshu;
-
-
+    @InjectView(R.id.tv_count)
+    TextView mCount;
     private MapRecyclerViewAdapter adapter;
 
     private SharedPreferencesUtils sp;
@@ -89,6 +89,7 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
             stationPosition = sp.getInt(Keyword.THISSATION);
             setTitleNemaTime();
             adapter.setPostion(stationPosition);
+            adapter.setNumberSX();
             adapter.notifyDataSetChanged();
             sp.setboolean(Keyword.ISDAOZHAN, false);
         }
@@ -122,6 +123,7 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
     }
 
     private void setData() {//继续运行加载数据
+        mCount.setText(sp.getInt(Keyword.CARNUMBER) + "");
         stationPosition = sp.getInt(Keyword.THISSATION);
         nextName.setText(sp.getString(Keyword.NEXTSTANAME));
         yjTime.setText(sp.getString(Keyword.NEXTTIME));
@@ -209,7 +211,7 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
                 (List<StationBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_STATION_LIST);
         nextName.setText(stationList.get(stationPosition).getStationName());
         yjTime.setText(GetDateTime.getYJTime(stationList.get(stationPosition).getDuration()));
-
+        mCount.setText(sp.getInt(Keyword.CARNUMBER) + "");
         sp.setString(Keyword.NEXTSTANAME, stationList.get(stationPosition).getStationName());
         sp.setString(Keyword.NEXTTIME, GetDateTime.getYJTime(stationList.get(stationPosition).getDuration()));
 

@@ -119,4 +119,11 @@ public class Keyword {
      */
     public static final String NEXTSTANAME = "NEXTSTANAME";//保存下一站名称
     public static final String NEXTTIME = "NEXTTIME";//保存预计到站时间
+
+    /**
+     * 没站的上车人数、下车人数和车上还剩余多少人
+     */
+    public static final String SHANGCHENUMBER = "SHANGCHENUMBER";//上车人数
+    public static final String XIACHENUMBER = "XIACHENUMBER";//下车人数
+    public static final String CARNUMBER = "CARNUMBER";//车上还剩多少人
 }

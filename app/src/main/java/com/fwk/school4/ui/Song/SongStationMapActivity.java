@@ -53,6 +53,8 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
     TextView nextName;
     @InjectView(R.id.tv_yjtiem)
     TextView yjTime;
+    @InjectView(R.id.tv_count)
+    TextView mCount;
 
     private MapRecyclerViewAdapter adapter;
 
@@ -99,6 +101,7 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
             stationPosition = sp.getInt(Keyword.THISSATION);
             setTitleNemaTime();
             adapter.setPostion(stationPosition);
+            adapter.setNumberSX();
             adapter.notifyDataSetChanged();
             sp.setboolean(Keyword.ISDAOZHAN, false);
         }
@@ -120,6 +123,7 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
         stationPosition = sp.getInt(Keyword.THISSATION);
         nextName.setText(sp.getString(Keyword.NEXTSTANAME));
         yjTime.setText(sp.getString(Keyword.NEXTTIME));
+        mCount.setText(sp.getInt(Keyword.CARNUMBER) + "");
         recyclerInit();
     }
 
@@ -199,6 +203,7 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
                 (List<StationBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_STATION_LIST);
         nextName.setText(stationList.get(stationPosition).getStationName());
         yjTime.setText(GetDateTime.getYJTime(stationList.get(stationPosition).getDuration()));
+        mCount.setText(sp.getInt(Keyword.CARNUMBER) + "");
         sp.setString(Keyword.NEXTSTANAME, stationList.get(stationPosition).getStationName());
         sp.setString(Keyword.NEXTTIME, GetDateTime.getYJTime(stationList.get(stationPosition).getDuration()));
     }

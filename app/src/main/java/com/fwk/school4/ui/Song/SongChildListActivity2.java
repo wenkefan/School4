@@ -35,6 +35,7 @@ import com.fwk.school4.utils.LogUtils;
 import com.fwk.school4.utils.SharedPreferencesUtils;
 import com.fwk.school4.utils.ToastUtil;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -127,7 +128,7 @@ public class SongChildListActivity2 extends BasaActivity implements JieChildList
                 //上车重新分组
                 childPosition = data.getIntExtra(Keyword.SP_SELECT_ID, 0);
                 if (map.get(staBean.getStrid()).get(mItem).getSelectid() == childPosition) {
-                    ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + askForLeaveStatus[position - 1]);
+                    ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + askForLeaveStatus[childPosition - 1]);
                 } else {
                     showDialog();
                     /**
@@ -232,13 +233,15 @@ public class SongChildListActivity2 extends BasaActivity implements JieChildList
                     finish();
                     break;
                 case Keyword.FLAGDOWNCAR:
-                    ChildData.setJieData(map, staBean, mItem, childPosition);
+                    ChildData.setSongData(map, staBean, mItem, childPosition);
                     adapter.getData();
                     adapter.notifyDataSetChanged();
+                    shangche();
                     break;
                 case Keyword.FLAGUPCAR:
                     adapter.getData();
                     adapter.notifyDataSetChanged();
+                    xiache();
                     ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + "下车");
                     break;
             }
@@ -249,7 +252,41 @@ public class SongChildListActivity2 extends BasaActivity implements JieChildList
     public void onBackPressed() {
         if (jumpPosition) {
             ToastUtil.show("正在等待上车...");
+            return;
         }
         super.onBackPressed();
+    }
+    private Map<Integer,Integer> Shangche;
+    private Map<Integer,Integer> Xiache;
+    private int shengyu;
+    private void shangche(){
+        Shangche = (Map<Integer, Integer>) sp.queryForSharedToObject(Keyword.SHANGCHENUMBER);
+        if (Shangche == null){
+            Shangche = new HashMap<>();
+        }
+        if (Shangche.get(map.get(staBean.getStrid()).get(mItem).getSendStartStation()) == null){
+            Shangche.put(map.get(staBean.getStrid()).get(mItem).getSendStartStation(),1);
+        } else {
+            int number = Shangche.get(map.get(staBean.getStrid()).get(mItem).getSendStartStation());
+            Shangche.put(map.get(staBean.getStrid()).get(mItem).getSendStartStation(),number + 1);
+        }
+        shengyu = sp.getInt(Keyword.CARNUMBER);
+        sp.setInt(Keyword.CARNUMBER,shengyu + 1);
+        sp.saveToShared(Keyword.SHANGCHENUMBER,Shangche);
+    }
+    private void xiache(){
+        Xiache = (Map<Integer, Integer>) sp.queryForSharedToObject(Keyword.XIACHENUMBER);
+        if (Xiache == null){
+            Xiache = new HashMap<>();
+        }
+        if (Xiache.get(map.get(staBean.getStrid()).get(mItem).getSendStation()) == null){
+            Xiache.put(map.get(staBean.getStrid()).get(mItem).getSendStation(),1);
+        } else {
+            int number = Xiache.get(map.get(staBean.getStrid()).get(mItem).getSendStation());
+            Xiache.put(map.get(staBean.getStrid()).get(mItem).getSendStation(),number + 1);
+        }
+        shengyu = sp.getInt(Keyword.CARNUMBER);
+        sp.setInt(Keyword.CARNUMBER,shengyu - 1);
+        sp.saveToShared(Keyword.XIACHENUMBER,Xiache);
     }
 }
