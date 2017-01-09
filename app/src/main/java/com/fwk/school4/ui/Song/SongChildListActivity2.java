@@ -183,12 +183,16 @@ public class SongChildListActivity2 extends BasaActivity implements JieChildList
              * 发车字段为：班次编号、kgid、发车时间、类型(1发车、2停车)
              * 停车字段为：派车单号、kgid、发车时间、类型(1发车、2停车)
              */
-            showDialog();
-            String url = String.format(HTTPURL.API_OPEN, sp.getInt(Keyword.SP_PAICHEDANHAO), SpLogin.getKgId(), GetDateTime.getdatetime(), 2);
-            LogUtils.d("结束URL：" + url);
-            EndNetWork endNetWork = EndNetWork.newInstance(this);
-            endNetWork.setNetWorkListener(this);
-            endNetWork.setUrl(Keyword.FLAGENDDAOZHAN, url, FristFaChe.class);
+            if (sp.getInt(Keyword.CARNUMBER) == 0) {
+                showDialog();
+                String url = String.format(HTTPURL.API_OPEN, sp.getInt(Keyword.SP_PAICHEDANHAO), SpLogin.getKgId(), GetDateTime.getdatetime(), 2);
+                LogUtils.d("结束URL：" + url);
+                EndNetWork endNetWork = EndNetWork.newInstance(this);
+                endNetWork.setNetWorkListener(this);
+                endNetWork.setUrl(Keyword.FLAGENDDAOZHAN, url, FristFaChe.class);
+            } else {
+                ToastUtil.show("车上还有幼儿，请仔细检查");
+            }
         } else {
             showDialog();
             String url = String.format(HTTPURL.API_PROCESS, SpLogin.getKgId(),stationlist.get(position).getStationId(),sp.getInt(Keyword.SP_PAICHEDANHAO),2, GetDateTime.getdatetime());

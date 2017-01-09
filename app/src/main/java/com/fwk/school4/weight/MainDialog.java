@@ -31,7 +31,7 @@ public class MainDialog {
      */
     public static void ShowJRBanci(final Activity context, String name, final int fangxiang,final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("提示").setMessage("\"" +name + "\"" + "是否发车班次：");
+        builder.setTitle("提示").setMessage("\"" +name + "\"" + "是否发车");
         builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -64,7 +64,7 @@ public class MainDialog {
      */
     public static void ShowDLBanci(final Activity context,String name,String teachername,final int fangxiang,final int position){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("警告").setMessage("你不是班次：" + name + "的随车老师\n是否代理" + teachername + "老师");
+        builder.setTitle("警告").setMessage(name + "的随车老师是：" + teachername+"\n"+"是否代理发车");
         builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -101,7 +101,8 @@ public class MainDialog {
         String name = bean.getBusScheduleName();
         final int fangxiang = bean.getAttendanceDirections();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("警告").setMessage("班次：" + name + "正在运行中...");
+        builder.setCancelable(false);
+        builder.setTitle("警告").setMessage(name + "正在运行中...");
         builder.setNegativeButton("重新", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
