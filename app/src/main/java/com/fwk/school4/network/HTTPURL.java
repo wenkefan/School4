@@ -5,9 +5,9 @@ package com.fwk.school4.network;
  */
 public class HTTPURL {
     //private static final String API_URL = "http://192.168.1.168:8091/WebServices/MobileAttendanceService.ashx?Option=";
-    private static final String API_URL = "http://manage.youery.com/WebServices/MobileAttendanceService.ashx?";
+//    private static final String API_URL = "http://manage.youery.com/WebServices/MobileAttendanceService.ashx?";
     //    private static final String API_URL = "http://192.168.1.116:8083/WebServices/MobileAttendanceService.ashx?";
-//    private static final String API_URL = "http://192.168.1.151:8081/WebServices/MobileAttendanceService.ashx?";
+    private static final String API_URL = "http://192.168.1.151:8081/WebServices/MobileAttendanceService.ashx?";
 
     /**
      * 获取基础信息（线路列表、巴士列表、司机列表）
@@ -63,7 +63,7 @@ public class HTTPURL {
      * 发车字段为：班次编号、kgid、发车时间、类型(1发车、2停车)
      * 停车字段为：派车单号、kgid、发车时间、类型(1发车、2停车)
      */
-    public static final String API_OPEN = API_URL + "Option=AddBusOrderBySchedule&busScheduleId=%1$s&kgId=%2$s&tTime=%3$s&exerciseType=%4$s";
+    public static final String API_OPEN = API_URL + "Option=AddBusOrderBySchedule&busScheduleId=%1$s&kgId=%2$s&tTime=%3$s&exerciseType=%4$s&userId=%5$s";
 
     //中间过程的发车、到站
     /**

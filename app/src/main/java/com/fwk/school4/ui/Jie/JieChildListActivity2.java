@@ -25,7 +25,7 @@ import com.fwk.school4.network.api.CarDZNetWork;
 import com.fwk.school4.network.api.DownCarNetWork;
 import com.fwk.school4.network.api.EndNetWork;
 import com.fwk.school4.network.api.UpCarNetWork;
-import com.fwk.school4.ui.BasaActivity;
+import com.fwk.school4.ui.NFCBaseActivity;
 import com.fwk.school4.ui.ShangcheActivity;
 import com.fwk.school4.ui.XiacheActivity;
 import com.fwk.school4.ui.adapter.JieChildListAdapter2;
@@ -46,7 +46,7 @@ import butterknife.OnClick;
  * Created by fanwenke on 16/12/23.
  */
 
-public class JieChildListActivity2 extends BasaActivity implements JieChildListAdapter2.OnItemAdapterListener, NetWorkListener {
+public class JieChildListActivity2 extends NFCBaseActivity implements JieChildListAdapter2.OnItemAdapterListener, NetWorkListener {
 
     @InjectView(R.id.title_tv)
     TextView title;
@@ -64,7 +64,7 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
     private Map<String, List<ChildBean.RerurnValueBean>> map;//幼儿map
     private StaBean staBean;//选中幼儿所在的站点
     private int mItem;//站点中幼儿的位置数
-    private int position;
+    private int stationPosition;
     private boolean jumpPosition;
     private List<StationBean.RerurnValueBean> stationlist;
     private boolean isJieShu = false;
@@ -84,7 +84,7 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
         title.setText(R.string.jie);
 
         Intent intent = getIntent();
-        position = intent.getIntExtra(Keyword.STATIONPOSITION, 0);
+        stationPosition = intent.getIntExtra(Keyword.STATIONPOSITION, 0);
         jumpPosition = intent.getBooleanExtra(Keyword.JUMPPOSITION,false );
 
         manager = new LinearLayoutManager(this);
@@ -92,11 +92,14 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
         rv.setLayoutManager(manager);
         adapter = new JieChildListAdapter2();
         rv.setAdapter(adapter);
-        rv.smoothScrollToPosition(position);
+        rv.smoothScrollToPosition(stationPosition);
         adapter.setOnItemAdapterListener(this);
-        if (position == stationlist.size() - 1) {
+        if (stationPosition == stationlist.size() - 1) {
             btn.setText("结束");
             isJieShu = true;
+        }
+        if (!jumpPosition){
+            btn.setVisibility(View.GONE);
         }
     }
 
@@ -187,7 +190,7 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
              */
         if (sp.getInt(Keyword.CARNUMBER) == 0) {
             showDialog();
-            String url = String.format(HTTPURL.API_OPEN, sp.getInt(Keyword.SP_PAICHEDANHAO), SpLogin.getKgId(), GetDateTime.getdatetime(), 2);
+            String url = String.format(HTTPURL.API_OPEN, sp.getInt(Keyword.SP_PAICHEDANHAO), SpLogin.getKgId(), GetDateTime.getdatetime(), 2, SpLogin.getWorkerExtensionId());
             LogUtils.d("结束URL：" + url);
             EndNetWork endNetWork = EndNetWork.newInstance(this);
             endNetWork.setNetWorkListener(this);
@@ -197,7 +200,7 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
         }
         } else {
             showDialog();
-            String url = String.format(HTTPURL.API_PROCESS, SpLogin.getKgId(), stationlist.get(position).getStationId(), sp.getInt(Keyword.SP_PAICHEDANHAO), 2, GetDateTime.getdatetime());
+            String url = String.format(HTTPURL.API_PROCESS, SpLogin.getKgId(), stationlist.get(stationPosition).getStationId(), sp.getInt(Keyword.SP_PAICHEDANHAO), 2, GetDateTime.getdatetime());
             LogUtils.d("发车URL：" + url);
             CarDZNetWork carDZNetWork = CarDZNetWork.newInstance(this);
             carDZNetWork.setNetWorkListener(this);
@@ -229,8 +232,8 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
             closeDialog();
             switch (msg.what) {
                 case Keyword.FLAGDAOZHAN:
-                    position++;
-                    sp.setInt(Keyword.THISSATION, position);
+                    stationPosition++;
+                    sp.setInt(Keyword.THISSATION, stationPosition);
                     sp.setboolean(Keyword.ISDAOZHAN, true);
                     finish();
                     break;
@@ -297,5 +300,24 @@ public class JieChildListActivity2 extends BasaActivity implements JieChildListA
         }
         super.onBackPressed();
     }
-
+    /**
+     * 刷卡返回
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        String CarId = readICCardNo(intent);
+        LogUtils.d("CarId:" + CarId);
+        List<ChildBean.RerurnValueBean> list = map.get(stationlist.get(stationPosition).getStationId() + "01");
+        boolean isCan = false;
+        for (int i = 0; i < list.size(); i++){
+            if (CarId.equals(list.get(i).getSACardNo())){
+                isCan = true;
+                break;
+            }
+        }
+        if (!isCan){
+            ToastUtil.show("当前站没有此学生");
+        }
+    }
 }

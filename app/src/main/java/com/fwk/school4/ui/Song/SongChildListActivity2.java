@@ -26,6 +26,7 @@ import com.fwk.school4.network.api.DownCarNetWork;
 import com.fwk.school4.network.api.EndNetWork;
 import com.fwk.school4.network.api.UpCarNetWork;
 import com.fwk.school4.ui.BasaActivity;
+import com.fwk.school4.ui.NFCBaseActivity;
 import com.fwk.school4.ui.ShangcheActivity;
 import com.fwk.school4.ui.XiacheActivity;
 import com.fwk.school4.ui.adapter.JieChildListAdapter2;
@@ -46,7 +47,7 @@ import butterknife.OnClick;
  * Created by fanwenke on 16/12/23.
  */
 
-public class SongChildListActivity2 extends BasaActivity implements JieChildListAdapter2.OnItemAdapterListener, NetWorkListener {
+public class SongChildListActivity2 extends NFCBaseActivity implements JieChildListAdapter2.OnItemAdapterListener, NetWorkListener {
 
     @InjectView(R.id.title_tv)
     TextView title;
@@ -185,7 +186,7 @@ public class SongChildListActivity2 extends BasaActivity implements JieChildList
              */
             if (sp.getInt(Keyword.CARNUMBER) == 0) {
                 showDialog();
-                String url = String.format(HTTPURL.API_OPEN, sp.getInt(Keyword.SP_PAICHEDANHAO), SpLogin.getKgId(), GetDateTime.getdatetime(), 2);
+                String url = String.format(HTTPURL.API_OPEN, sp.getInt(Keyword.SP_PAICHEDANHAO), SpLogin.getKgId(), GetDateTime.getdatetime(), 2, SpLogin.getWorkerExtensionId());
                 LogUtils.d("结束URL：" + url);
                 EndNetWork endNetWork = EndNetWork.newInstance(this);
                 endNetWork.setNetWorkListener(this);
@@ -292,5 +293,21 @@ public class SongChildListActivity2 extends BasaActivity implements JieChildList
         shengyu = sp.getInt(Keyword.CARNUMBER);
         sp.setInt(Keyword.CARNUMBER,shengyu - 1);
         sp.saveToShared(Keyword.XIACHENUMBER,Xiache);
+    }
+
+    /**
+     * 刷卡返回
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        String CarId = readICCardNo(intent);
+        LogUtils.d("CarId:" + CarId);
+        List<ChildBean.RerurnValueBean> list = map.get(staBean.getStrid());
+        for (int i = 0; i < list.size(); i++){
+            if (CarId.equals(list.get(i).getSACardNo())){
+
+            }
+        }
     }
 }

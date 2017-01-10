@@ -55,6 +55,21 @@ public class MainRecyclerViewAdapter extends BaseRecyclerAdapter {
                 banciHolder.mBanciTime.setTextColor(mContext.getResources().getColor(R.color.black));
                 banciHolder.mBanciTeacher.setTextColor(mContext.getResources().getColor(R.color.black));
                 banciHolder.mBanciSj.setTextColor(mContext.getResources().getColor(R.color.black));
+                banciHolder.zt.setTextColor(mContext.getResources().getColor(R.color.black));
+            }
+            switch (list.get(position).getStatus()){
+                case 0:
+                    banciHolder.mZt.setText("未发车");
+                    banciHolder.mZt.setTextColor(mContext.getResources().getColor(R.color.green));
+                    break;
+                case 1:
+                    banciHolder.mZt.setText("已发车");
+                    banciHolder.mZt.setTextColor(mContext.getResources().getColor(R.color.yellow));
+                    break;
+                case 2:
+                    banciHolder.mZt.setText("已结束");
+                    banciHolder.mZt.setTextColor(mContext.getResources().getColor(R.color.red));
+                    break;
             }
         }
         super.onBindViewHolder(holder, position);
@@ -75,6 +90,7 @@ public class MainRecyclerViewAdapter extends BaseRecyclerAdapter {
         public TextView mBanciTime;
         public TextView mBanciTeacher;
         public TextView mBanciSj;
+        public TextView zt,mZt;
 
         public BanciViewHolder(View itemView) {
             super(itemView);
@@ -83,6 +99,8 @@ public class MainRecyclerViewAdapter extends BaseRecyclerAdapter {
             mBanciTime = $(R.id.item_main_time);
             mBanciTeacher = $(R.id.item_main_techer);
             mBanciSj = $(R.id.item_main_sj);
+            zt = $(R.id.tv_zt);
+            mZt = $(R.id.tv_wf_fc_js);
         }
     }
 }

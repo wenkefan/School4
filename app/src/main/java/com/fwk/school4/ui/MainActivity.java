@@ -135,7 +135,7 @@ public class MainActivity extends BasaActivity implements NetWorkListener, BaseR
          * 发车字段为：班次编号、kgid、发车时间、类型(1发车、2停车)
          * 停车字段为：派车单号、kgid、发车时间、类型(1发车、2停车)
          */
-        FristURL = String.format(HTTPURL.API_OPEN, bean.getBusScheduleId(), SpLogin.getKgId(), GetDateTime.getdatetime(), 1);
+        FristURL = String.format(HTTPURL.API_OPEN, bean.getBusScheduleId(), SpLogin.getKgId(), GetDateTime.getdatetime(), 1,SpLogin.getWorkerExtensionId());
 
     }
     private Intent intent;

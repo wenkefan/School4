@@ -27,4 +27,7 @@
     <color name="fachebgoff">#78d1bf</color>
     <color name="fachebgon">#5ac2ad</color>
     <color name="daozhanoff">#62e1ce</color>
+    <color name="yellow">#ffa500</color><!-- 黄色 -->
+    <color name="red">#ff0000</color><!-- 红色 -->
+
 </resources>
