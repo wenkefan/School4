@@ -19,6 +19,7 @@ import com.fwk.school4.listener.DaoZhanListener;
 import com.fwk.school4.model.StaBean;
 import com.fwk.school4.model.StationBean;
 import com.fwk.school4.utils.SharedPreferencesUtils;
+import com.fwk.school4.utils.SharedPreferencesUtils2;
 
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ public class MapRecyclerViewAdapter extends BaseRecyclerAdapter implements View.
 
     private Context mContext;
     private SharedPreferencesUtils sp;
+    private SharedPreferencesUtils2 spData;
     private List<StationBean.RerurnValueBean> list;
     private Map<String,List<StaBean>> map;
     private DisplayMetrics display;
@@ -52,8 +54,9 @@ public class MapRecyclerViewAdapter extends BaseRecyclerAdapter implements View.
         this.stationPosition = stationPosition;
         this.times = times;
         sp = new SharedPreferencesUtils();
-        list = (List<StationBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_STATION_LIST);
-        map = (Map<String, List<StaBean>>) sp.queryForSharedToObject(Keyword.MAPLIST);
+        spData = new SharedPreferencesUtils2();
+        list = (List<StationBean.RerurnValueBean>) spData.queryForSharedToObject(Keyword.SP_STATION_LIST);
+        map = (Map<String, List<StaBean>>) spData.queryForSharedToObject(Keyword.MAPLIST);
         shangche = (Map<Integer, Integer>) sp.queryForSharedToObject(Keyword.SHANGCHENUMBER);
         xiache = (Map<Integer, Integer>) sp.queryForSharedToObject(Keyword.XIACHENUMBER);
     }
@@ -196,8 +199,8 @@ public class MapRecyclerViewAdapter extends BaseRecyclerAdapter implements View.
         return 0;
     }
     public void setNumberSX(){
-        list = (List<StationBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_STATION_LIST);
-        map = (Map<String, List<StaBean>>) sp.queryForSharedToObject(Keyword.MAPLIST);
+        list = (List<StationBean.RerurnValueBean>) spData.queryForSharedToObject(Keyword.SP_STATION_LIST);
+        map = (Map<String, List<StaBean>>) spData.queryForSharedToObject(Keyword.MAPLIST);
         shangche = (Map<Integer, Integer>) sp.queryForSharedToObject(Keyword.SHANGCHENUMBER);
         xiache = (Map<Integer, Integer>) sp.queryForSharedToObject(Keyword.XIACHENUMBER);
         notifyDataSetChanged();

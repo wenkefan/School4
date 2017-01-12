@@ -47,6 +47,7 @@ public class XiacheActivity extends BasaActivity implements View.OnClickListener
 
     private ChildBean.RerurnValueBean bean;
     private SharedPreferencesUtils sp = new SharedPreferencesUtils();
+    private SharedPreferencesUtils spData = new SharedPreferencesUtils();
 //    private boolean isZhuangtai = false;
     private CenterItemDialog dialog = null;
     private List<StationModeBean> stationModeBeen;
@@ -55,7 +56,7 @@ public class XiacheActivity extends BasaActivity implements View.OnClickListener
 
     public XiacheActivity() {
 
-        stationModeBeen = (List<StationModeBean>) sp.queryForSharedToObject(Keyword.STATIONIDLIST);
+        stationModeBeen = (List<StationModeBean>) spData.queryForSharedToObject(Keyword.STATIONIDLIST);
     }
 
     @Override

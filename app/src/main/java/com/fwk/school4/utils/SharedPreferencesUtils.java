@@ -52,6 +52,7 @@ public class SharedPreferencesUtils {
         }
         return null;
     }
+
     public void setString(String key, String value){
         editor.putString(key,value).commit();
     }
@@ -70,9 +71,10 @@ public class SharedPreferencesUtils {
     public boolean getBoolean(String key){
         return sp.getBoolean(key,false);
     }
-
     public void removData(){
         editor.clear();
         editor.commit();
     }
+
+
 }

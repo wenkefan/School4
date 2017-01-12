@@ -27,6 +27,7 @@ import com.fwk.school4.ui.adapter.MapRecyclerViewAdapter;
 import com.fwk.school4.utils.GetDateTime;
 import com.fwk.school4.utils.LogUtils;
 import com.fwk.school4.utils.SharedPreferencesUtils;
+import com.fwk.school4.utils.SharedPreferencesUtils2;
 import com.fwk.school4.utils.Stationutil;
 
 import java.util.ArrayList;
@@ -59,6 +60,7 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
     private MapRecyclerViewAdapter adapter;
 
     private SharedPreferencesUtils sp;
+    private SharedPreferencesUtils2 spData;
 
     private List<BanciBean.RerurnValueBean> list;
 
@@ -77,6 +79,7 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
     public void init() {
         title.setText(getResources().getString(R.string.map_tltile));
         sp = new SharedPreferencesUtils();
+        spData = new SharedPreferencesUtils2();
         display = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(display);
         Intent intent = getIntent();
@@ -108,7 +111,7 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
     }
 
     private void initData(int position) {//初始化数据
-        list = (List<BanciBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_BANCI_LIST);
+        list = (List<BanciBean.RerurnValueBean>) spData.queryForSharedToObject(Keyword.SP_BANCI_LIST);
         bean = list.get(position);
         //站点url
         String url = String.format(HTTPURL.API_ZHANDIAN, SpLogin.getKgId(),
@@ -200,7 +203,7 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
 
     private void setTitleNemaTime() {
         List<StationBean.RerurnValueBean> stationList =
-                (List<StationBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_STATION_LIST);
+                (List<StationBean.RerurnValueBean>) spData.queryForSharedToObject(Keyword.SP_STATION_LIST);
         nextName.setText(stationList.get(stationPosition).getStationName());
         yjTime.setText(GetDateTime.getYJTime(stationList.get(stationPosition).getDuration()));
         mCount.setText(sp.getInt(Keyword.CARNUMBER) + "");
@@ -210,9 +213,9 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
     private int Position;
     @Override
     public void OnClickListener(int position) {
-        List<StationBean.RerurnValueBean> stationList = (List<StationBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_STATION_LIST);
+        List<StationBean.RerurnValueBean> stationList = (List<StationBean.RerurnValueBean>) spData.queryForSharedToObject(Keyword.SP_STATION_LIST);
         this.Position = position;
-        String url = String.format(HTTPURL.API_PROCESS,SpLogin.getKgId(),stationList.get(position).getStationId(),sp.getInt(Keyword.SP_PAICHEDANHAO),1,GetDateTime.getdatetime());
+        String url = String.format(HTTPURL.API_PROCESS,SpLogin.getKgId(),stationList.get(position).getStationId(),spData.getInt(Keyword.SP_PAICHEDANHAO),1,GetDateTime.getdatetime());
         LogUtils.d("到站URL：" + url);
         CarFCNetWork carFCNetWork = CarFCNetWork.newInstance(this);
         carFCNetWork.setNetWorkListener(this);

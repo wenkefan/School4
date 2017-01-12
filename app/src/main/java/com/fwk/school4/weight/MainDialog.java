@@ -107,10 +107,8 @@ public class MainDialog {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 SharedPreferencesUtils sp = new SharedPreferencesUtils();
-                sp.setboolean(Keyword.BEGIN,false);
                 context.requestBanci();
                 dialogInterface.dismiss();
-                sp.removData();
             }
         });
         builder.setPositiveButton("继续", new DialogInterface.OnClickListener() {

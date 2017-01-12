@@ -15,6 +15,7 @@ import java.util.Map;
 public class ChildData {
 
     private static SharedPreferencesUtils sp = new SharedPreferencesUtils();
+    private static SharedPreferencesUtils2 spData = new SharedPreferencesUtils2();
 
     /**
      * 送幼儿
@@ -32,8 +33,8 @@ public class ChildData {
      */
     public static void setSongData(Map<String, List<ChildBean.RerurnValueBean>> map, StaBean staBean, int mItem, int position) {
         //第一步
-        List<StaBean> stationlist = (List<StaBean>) sp.queryForSharedToObject(Keyword.STAIDLIST);
-        List<StaBean> bean = (List<StaBean>) sp.queryForSharedToObject(Keyword.SELECTSTA);
+        List<StaBean> stationlist = (List<StaBean>) spData.queryForSharedToObject(Keyword.STAIDLIST);
+        List<StaBean> bean = (List<StaBean>) spData.queryForSharedToObject(Keyword.SELECTSTA);
         boolean flag = false;
         if (position == 1) {
 
@@ -74,8 +75,8 @@ public class ChildData {
         }
 
         map.get(staBean.getStrid()).get(mItem).setSelectid(position);
-        sp.saveToShared(Keyword.SELECTSTA, bean);
-        sp.saveToShared(Keyword.MAPLIST, map);
+        spData.saveToShared(Keyword.SELECTSTA, bean);
+        spData.saveToShared(Keyword.MAPLIST, map);
     }
 
     /**
@@ -94,8 +95,8 @@ public class ChildData {
      */
     public static void setJieData(Map<String, List<ChildBean.RerurnValueBean>> map, StaBean staBean, int mItem, int position) {
         //第一步
-        List<StaBean> stationlist = (List<StaBean>) sp.queryForSharedToObject(Keyword.STAIDLIST);
-        List<StaBean> bean = (List<StaBean>) sp.queryForSharedToObject(Keyword.SELECTSTA);
+        List<StaBean> stationlist = (List<StaBean>) spData.queryForSharedToObject(Keyword.STAIDLIST);
+        List<StaBean> bean = (List<StaBean>) spData.queryForSharedToObject(Keyword.SELECTSTA);
         boolean flag = false;
         if (position == 1) {
 
@@ -135,8 +136,8 @@ public class ChildData {
 
 
         map.get(staBean.getStrid()).get(mItem).setSelectid(position);
-        sp.saveToShared(Keyword.SELECTSTA, bean);
-        sp.saveToShared(Keyword.MAPLIST, map);
+        spData.saveToShared(Keyword.SELECTSTA, bean);
+        spData.saveToShared(Keyword.MAPLIST, map);
     }
 
     public static int setXiache(Map<String, List<ChildBean.RerurnValueBean>> map, StaBean staBean, int mItem, int position) {
@@ -144,7 +145,7 @@ public class ChildData {
             return 0;
         }
         map.get(staBean.getStrid()).get(mItem).setSelectid(position);
-        sp.saveToShared(Keyword.MAPLIST, map);
+        spData.saveToShared(Keyword.MAPLIST, map);
         return 1;
     }
 

@@ -70,7 +70,7 @@ public class ChildNetWork extends BaseNetWork {
                     return;
 
                 }
-                sp.saveToShared(Keyword.SP_CHILD_LIST, list);
+                spData.saveToShared(Keyword.SP_CHILD_LIST, list);
                 Stationutil stationutil = Stationutil.newInstance();
                 stationutil.setMaplist();
                 listener.NetWorkSuccess(Keyword.FLAGCHILD);

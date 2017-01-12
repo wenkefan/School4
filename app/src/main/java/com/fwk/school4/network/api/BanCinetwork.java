@@ -91,8 +91,8 @@ public class BanCinetwork extends BaseNetWork {
                     list.add(i,list1.get(i));
                 }
 
-                sp.saveToShared(Keyword.SP_BANCI, bean);
-                sp.saveToShared(Keyword.SP_BANCI_LIST, list);
+                spData.saveToShared(Keyword.SP_BANCI, bean);
+                spData.saveToShared(Keyword.SP_BANCI_LIST, list);
                 bean = null;
                 list = null;
 

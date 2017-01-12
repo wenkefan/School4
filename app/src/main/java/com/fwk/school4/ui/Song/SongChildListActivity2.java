@@ -34,6 +34,7 @@ import com.fwk.school4.utils.ChildData;
 import com.fwk.school4.utils.GetDateTime;
 import com.fwk.school4.utils.LogUtils;
 import com.fwk.school4.utils.SharedPreferencesUtils;
+import com.fwk.school4.utils.SharedPreferencesUtils2;
 import com.fwk.school4.utils.ToastUtil;
 
 import java.util.HashMap;
@@ -59,6 +60,7 @@ public class SongChildListActivity2 extends NFCBaseActivity implements JieChildL
     private LinearLayoutManager manager;
     private JieChildListAdapter2 adapter;
     private SharedPreferencesUtils sp = new SharedPreferencesUtils();
+    private SharedPreferencesUtils2 spData = new SharedPreferencesUtils2();
 
     private Map<String, List<ChildBean.RerurnValueBean>> map;//幼儿map
     private StaBean staBean;//选中幼儿所在的站点
@@ -70,7 +72,7 @@ public class SongChildListActivity2 extends NFCBaseActivity implements JieChildL
 
     public SongChildListActivity2() {
 
-        stationlist = (List<StationBean.RerurnValueBean>) sp.queryForSharedToObject(Keyword.SP_STATION_LIST);
+        stationlist = (List<StationBean.RerurnValueBean>) spData.queryForSharedToObject(Keyword.SP_STATION_LIST);
     }
 
     @Override
@@ -104,7 +106,7 @@ public class SongChildListActivity2 extends NFCBaseActivity implements JieChildL
         //手动选择幼儿状态
         staBean = staid;
         mItem = position;
-        map = (Map<String, List<ChildBean.RerurnValueBean>>) sp.queryForSharedToObject(Keyword.MAPLIST);
+        map = (Map<String, List<ChildBean.RerurnValueBean>>) spData.queryForSharedToObject(Keyword.MAPLIST);
         List<ChildBean.RerurnValueBean> list = map.get(staid.getStrid());
         ChildBean.RerurnValueBean bean = list.get(position);
         Bundle bundle = new Bundle();
@@ -137,7 +139,7 @@ public class SongChildListActivity2 extends NFCBaseActivity implements JieChildL
                      */
                     String url = String.format(
                             HTTPURL.API_STUDENT_OPEN_DOWN,
-                            sp.getInt(Keyword.SP_PAICHEDANHAO),
+                            spData.getInt(Keyword.SP_PAICHEDANHAO),
                             map.get(staBean.getStrid()).get(mItem).getChildId(),
                             staBean.getId(),
                             GetDateTime.getdatetime(),
@@ -162,7 +164,7 @@ public class SongChildListActivity2 extends NFCBaseActivity implements JieChildL
                  */
                 String url = String.format(
                         HTTPURL.API_STUDENT_OPEN_DOWN,
-                        sp.getInt(Keyword.SP_PAICHEDANHAO),
+                        spData.getInt(Keyword.SP_PAICHEDANHAO),
                         map.get(staBean.getStrid()).get(mItem).getChildId(),
                         staBean.getId(),
                         GetDateTime.getdatetime(),
@@ -186,7 +188,7 @@ public class SongChildListActivity2 extends NFCBaseActivity implements JieChildL
              */
             if (sp.getInt(Keyword.CARNUMBER) == 0) {
                 showDialog();
-                String url = String.format(HTTPURL.API_OPEN, sp.getInt(Keyword.SP_PAICHEDANHAO), SpLogin.getKgId(), GetDateTime.getdatetime(), 2, SpLogin.getWorkerExtensionId());
+                String url = String.format(HTTPURL.API_OPEN, spData.getInt(Keyword.SP_PAICHEDANHAO), SpLogin.getKgId(), GetDateTime.getdatetime(), 2, SpLogin.getWorkerExtensionId());
                 LogUtils.d("结束URL：" + url);
                 EndNetWork endNetWork = EndNetWork.newInstance(this);
                 endNetWork.setNetWorkListener(this);
@@ -196,7 +198,7 @@ public class SongChildListActivity2 extends NFCBaseActivity implements JieChildL
             }
         } else {
             showDialog();
-            String url = String.format(HTTPURL.API_PROCESS, SpLogin.getKgId(),stationlist.get(position).getStationId(),sp.getInt(Keyword.SP_PAICHEDANHAO),2, GetDateTime.getdatetime());
+            String url = String.format(HTTPURL.API_PROCESS, SpLogin.getKgId(),stationlist.get(position).getStationId(),spData.getInt(Keyword.SP_PAICHEDANHAO),2, GetDateTime.getdatetime());
             LogUtils.d("发车URL：" + url);
             CarDZNetWork carDZNetWork = CarDZNetWork.newInstance(this);
             carDZNetWork.setNetWorkListener(this);

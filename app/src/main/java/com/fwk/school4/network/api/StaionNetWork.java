@@ -93,9 +93,9 @@ public class StaionNetWork extends BaseNetWork {
                     staBeen.add(staBean2);
                 }
 
-                sp.saveToShared(Keyword.SP_STATION_LIST,list);
+                spData.saveToShared(Keyword.SP_STATION_LIST,list);
 //                sp.saveToShared(Keyword.STATIONIDLIST,listId);
-                sp.saveToShared(Keyword.STAIDLIST,staBeen);
+                spData.saveToShared(Keyword.STAIDLIST,staBeen);
                 listener.NetWorkSuccess(Keyword.FLAGSTATION);
                 bean = null;
 
