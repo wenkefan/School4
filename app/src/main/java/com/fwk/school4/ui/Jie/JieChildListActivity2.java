@@ -70,6 +70,7 @@ public class JieChildListActivity2 extends NFCBaseActivity implements JieChildLi
     private boolean jumpPosition;
     private List<StationBean.RerurnValueBean> stationlist;
     private boolean isJieShu = false;
+    private int selStationID;
 
     public JieChildListActivity2() {
 
@@ -88,11 +89,11 @@ public class JieChildListActivity2 extends NFCBaseActivity implements JieChildLi
         Intent intent = getIntent();
         stationPosition = intent.getIntExtra(Keyword.STATIONPOSITION, 0);
         jumpPosition = intent.getBooleanExtra(Keyword.JUMPPOSITION,false );
-
+        selStationID = intent.getIntExtra(Keyword.SELECTSTATIONID,-1);
         manager = new LinearLayoutManager(this);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(manager);
-        adapter = new JieChildListAdapter2();
+        adapter = new JieChildListAdapter2(selStationID);
         rv.setAdapter(adapter);
         rv.smoothScrollToPosition(stationPosition);
         adapter.setOnItemAdapterListener(this);
@@ -247,12 +248,12 @@ public class JieChildListActivity2 extends NFCBaseActivity implements JieChildLi
                 case Keyword.FLAGDOWNCAR:
                     ChildData.setJieData(map, staBean, mItem, childPosition);
                     shangche();
-                    adapter.getData();
+                    adapter.getData(selStationID);
                     adapter.notifyDataSetChanged();
                     break;
                 case Keyword.FLAGUPCAR:
                     xiache();
-                    adapter.getData();
+                    adapter.getData(selStationID);
                     adapter.notifyDataSetChanged();
                     ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + "下车");
                     break;

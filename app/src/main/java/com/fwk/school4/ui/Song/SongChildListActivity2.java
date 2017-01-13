@@ -25,7 +25,6 @@ import com.fwk.school4.network.api.CarDZNetWork;
 import com.fwk.school4.network.api.DownCarNetWork;
 import com.fwk.school4.network.api.EndNetWork;
 import com.fwk.school4.network.api.UpCarNetWork;
-import com.fwk.school4.ui.BasaActivity;
 import com.fwk.school4.ui.NFCBaseActivity;
 import com.fwk.school4.ui.ShangcheActivity;
 import com.fwk.school4.ui.XiacheActivity;
@@ -69,6 +68,7 @@ public class SongChildListActivity2 extends NFCBaseActivity implements JieChildL
     private boolean jumpPosition;
     private List<StationBean.RerurnValueBean> stationlist;
     private boolean isJieShu = false;
+    private int selStationID;
 
     public SongChildListActivity2() {
 
@@ -87,17 +87,21 @@ public class SongChildListActivity2 extends NFCBaseActivity implements JieChildL
         Intent intent = getIntent();
         position = intent.getIntExtra(Keyword.STATIONPOSITION, 0);
         jumpPosition = intent.getBooleanExtra(Keyword.JUMPPOSITION, false);
+        selStationID = intent.getIntExtra(Keyword.SELECTSTATIONID,-1);
 
 
         manager = new LinearLayoutManager(this);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(manager);
-        adapter = new JieChildListAdapter2();
+        adapter = new JieChildListAdapter2(selStationID);
         rv.setAdapter(adapter);
         adapter.setOnItemAdapterListener(this);
         if (position == stationlist.size() - 1) {
             btn.setText("结束");
             isJieShu = true;
+        }
+        if (!jumpPosition){
+            btn.setVisibility(View.GONE);
         }
     }
 
@@ -241,12 +245,12 @@ public class SongChildListActivity2 extends NFCBaseActivity implements JieChildL
                     break;
                 case Keyword.FLAGDOWNCAR:
                     ChildData.setSongData(map, staBean, mItem, childPosition);
-                    adapter.getData();
+                    adapter.getData(selStationID);
                     adapter.notifyDataSetChanged();
                     shangche();
                     break;
                 case Keyword.FLAGUPCAR:
-                    adapter.getData();
+                    adapter.getData(selStationID);
                     adapter.notifyDataSetChanged();
                     xiache();
                     ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + "下车");

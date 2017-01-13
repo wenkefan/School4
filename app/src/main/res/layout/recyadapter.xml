@@ -14,15 +14,27 @@
 
         <TextView
             android:id="@+id/tv_station"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
-            android:drawableLeft="@mipmap/station"
+            android:drawableLeft="@mipmap/station_1"
             android:drawablePadding="5dp"
-            android:textColor="@color/black"
+            android:textColor="@color/darker_gray"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/tv_daozhantishi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/tv_station"
+            android:text="已到站"
+            android:textColor="@color/green"
             android:textSize="20dp"
-            android:layout_marginBottom="5dp"/>
+            android:visibility="gone"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_childlist"

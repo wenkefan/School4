@@ -1,6 +1,7 @@
 package com.fwk.school4.ui.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -33,14 +34,17 @@ public class JieChildListAdapter2 extends BaseRecyclerAdapter {
     private LinearLayoutManager manager;
     private ChildRecyAdapter adapter;
     private List<ChildBean.RerurnValueBean> list;
+    private int selStationID;
 
-    public void getData(){
+    public void getData(int selStationID){
+        this.selStationID = selStationID;
         map = (Map<String, List<ChildBean.RerurnValueBean>>) spData.queryForSharedToObject(Keyword.MAPLIST);
         staBeen = (List<StaBean>) spData.queryForSharedToObject(Keyword.SELECTSTA);
     }
 
 
-    public JieChildListAdapter2() {
+    public JieChildListAdapter2(int selStationID) {
+        this.selStationID = selStationID;
         map = (Map<String, List<ChildBean.RerurnValueBean>>) spData.queryForSharedToObject(Keyword.MAPLIST);
         staBeen = (List<StaBean>) spData.queryForSharedToObject(Keyword.SELECTSTA);
     }
@@ -68,6 +72,14 @@ public class JieChildListAdapter2 extends BaseRecyclerAdapter {
                     onItemAdapterListener.setOnItemListener(staBeen.get(position), itme);
                 }
             });
+            if (staBeen.get(position).getId() == selStationID)
+            if (staBeen.get(position).getId() == selStationID){
+                Drawable drawable = context.getDrawable(R.mipmap.station);
+                drawable.setBounds(0,0,drawable.getMinimumWidth(),drawable.getMinimumHeight());
+                viewHolde.tv.setCompoundDrawables(drawable,null,null,null);
+                viewHolde.tv.setTextColor(context.getResources().getColor(R.color.black));
+                viewHolde.tishi.setVisibility(View.VISIBLE);
+            }
         }
         super.onBindViewHolder(holder, position);
     }
@@ -80,12 +92,13 @@ public class JieChildListAdapter2 extends BaseRecyclerAdapter {
 
     public class ViewHolde extends ClickableViewHolder {
 
-        private TextView tv;
+        private TextView tv,tishi;
         private RecyclerView rv;
 
         public ViewHolde(View itemView) {
             super(itemView);
             tv = $(R.id.tv_station);
+            tishi = $(R.id.tv_daozhantishi);
             rv = $(R.id.rv_childlist);
         }
     }

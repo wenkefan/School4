@@ -192,6 +192,7 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
                     Intent intent = new Intent(JieStationMapActivity.this, JieChildListActivity2.class);
                     intent.putExtra(Keyword.JUMPPOSITION, true);
                     intent.putExtra(Keyword.STATIONPOSITION, Position);
+                    intent.putExtra(Keyword.SELECTSTATIONID, stationSelId);
                     startActivity(intent);
                     stationutil = null;
                     break;
@@ -221,10 +222,12 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
     }
 
     private int Position;
+    private int stationSelId;
     @Override
     public void OnClickListener(int position) {
         List<StationBean.RerurnValueBean> stationList = (List<StationBean.RerurnValueBean>) spData.queryForSharedToObject(Keyword.SP_STATION_LIST);
         this.Position = position;
+        this.stationSelId = stationList.get(position).getStationId();
         String url = String.format(HTTPURL.API_PROCESS,SpLogin.getKgId(),stationList.get(position).getStationId(),spData.getInt(Keyword.SP_PAICHEDANHAO),1,GetDateTime.getdatetime());
         LogUtils.d("到站URL：" + url);
         CarFCNetWork carFCNetWork = CarFCNetWork.newInstance(this);

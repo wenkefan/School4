@@ -127,4 +127,11 @@ public class Keyword {
     public static final String SHANGCHENUMBER = "SHANGCHENUMBER";//上车人数
     public static final String XIACHENUMBER = "XIACHENUMBER";//下车人数
     public static final String CARNUMBER = "CARNUMBER";//车上还剩多少人
+
+
+
+
+
+    public static final String SELECTSTATIONID = "SELECTSTATIONID";//点击到站时选择的站点ID
+
 }
