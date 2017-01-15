@@ -15,6 +15,7 @@ import com.fwk.school4.listener.DaoZhanListener;
 import com.fwk.school4.listener.NetWorkListener;
 import com.fwk.school4.model.BanciBean;
 import com.fwk.school4.model.ChildBean;
+import com.fwk.school4.model.StateStationBean;
 import com.fwk.school4.model.StationBean;
 import com.fwk.school4.model.StationFADAOBean;
 import com.fwk.school4.network.HTTPURL;
@@ -22,6 +23,8 @@ import com.fwk.school4.network.api.CarFCNetWork;
 import com.fwk.school4.network.api.ChildNetWork;
 import com.fwk.school4.network.api.StaionNetWork;
 import com.fwk.school4.ui.BasaActivity;
+import com.fwk.school4.ui.Jie.JieChildListActivity2;
+import com.fwk.school4.ui.Jie.JieStationMapActivity;
 import com.fwk.school4.ui.adapter.BaseRecyclerAdapter;
 import com.fwk.school4.ui.adapter.MapRecyclerViewAdapter;
 import com.fwk.school4.utils.GetDateTime;
@@ -84,10 +87,9 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
         getWindowManager().getDefaultDisplay().getMetrics(display);
         Intent intent = getIntent();
         int position = intent.getIntExtra(Keyword.POTIONIT, 0);
-        if (position == -1){
+        if (position == -1) {
             setData();
         } else {
-
             initData(position);
         }
     }
@@ -106,7 +108,17 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
             adapter.setPostion(stationPosition);
             adapter.setNumberSX();
             adapter.notifyDataSetChanged();
-            sp.setboolean(Keyword.ISDAOZHAN, false);
+        } else {
+            try {
+                StateStationBean stateStationBean = (StateStationBean) sp.queryForSharedToObject(Keyword.STATESTATIONBEAN);
+                Intent intent = new Intent(SongStationMapActivity.this, SongChildListActivity2.class);
+                intent.putExtra(Keyword.JUMPPOSITION, stateStationBean.isJUMPPOSITION());
+                intent.putExtra(Keyword.STATIONPOSITION, stateStationBean.getPosition());
+                intent.putExtra(Keyword.SELECTSTATIONID, stateStationBean.getStationSelId());
+                startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -181,8 +193,13 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
 
                     break;
                 case Keyword.FLAGFACHE:
+                    StateStationBean stateStationBean = new StateStationBean();
+                    stateStationBean.setJUMPPOSITION(true);
+                    stateStationBean.setStationSelId(stationSelId);
+                    stateStationBean.setPosition(Position);
+                    sp.saveToShared(Keyword.STATESTATIONBEAN, stateStationBean);
+                    sp.setboolean(Keyword.ISDAOZHAN, false);
                     setSJTime();
-                    Stationutil stationutil = Stationutil.newInstance();
                     Intent intent = new Intent(SongStationMapActivity.this, SongChildListActivity2.class);
                     intent.putExtra(Keyword.JUMPPOSITION, true);
                     intent.putExtra(Keyword.STATIONPOSITION, Position);
@@ -211,18 +228,20 @@ public class SongStationMapActivity extends BasaActivity implements NetWorkListe
         sp.setString(Keyword.NEXTSTANAME, stationList.get(stationPosition).getStationName());
         sp.setString(Keyword.NEXTTIME, GetDateTime.getYJTime(stationList.get(stationPosition).getDuration()));
     }
+
     private int Position;
     private int stationSelId;
+
     @Override
     public void OnClickListener(int position) {
         List<StationBean.RerurnValueBean> stationList = (List<StationBean.RerurnValueBean>) spData.queryForSharedToObject(Keyword.SP_STATION_LIST);
         this.Position = position;
         this.stationSelId = stationList.get(position).getStationId();
-        String url = String.format(HTTPURL.API_PROCESS,SpLogin.getKgId(),stationList.get(position).getStationId(),spData.getInt(Keyword.SP_PAICHEDANHAO),1,GetDateTime.getdatetime());
+        String url = String.format(HTTPURL.API_PROCESS, SpLogin.getKgId(), stationList.get(position).getStationId(), spData.getInt(Keyword.SP_PAICHEDANHAO), 1, GetDateTime.getdatetime());
         LogUtils.d("到站URL：" + url);
         CarFCNetWork carFCNetWork = CarFCNetWork.newInstance(this);
         carFCNetWork.setNetWorkListener(this);
-        carFCNetWork.setUrl(Keyword.FLAGFACHE,url, StationFADAOBean.class);
+        carFCNetWork.setUrl(Keyword.FLAGFACHE, url, StationFADAOBean.class);
     }
 
     /**

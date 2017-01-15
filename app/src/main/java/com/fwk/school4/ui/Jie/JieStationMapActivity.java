@@ -15,6 +15,7 @@ import com.fwk.school4.listener.DaoZhanListener;
 import com.fwk.school4.listener.NetWorkListener;
 import com.fwk.school4.model.BanciBean;
 import com.fwk.school4.model.ChildBean;
+import com.fwk.school4.model.StateStationBean;
 import com.fwk.school4.model.StationBean;
 import com.fwk.school4.model.StationFADAOBean;
 import com.fwk.school4.network.HTTPURL;
@@ -93,7 +94,17 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
             adapter.setPostion(stationPosition);
             adapter.setNumberSX();
             adapter.notifyDataSetChanged();
-            sp.setboolean(Keyword.ISDAOZHAN, false);
+        } else {
+            try {
+                StateStationBean stateStationBean = (StateStationBean) sp.queryForSharedToObject(Keyword.STATESTATIONBEAN);
+                Intent intent = new Intent(JieStationMapActivity.this, JieChildListActivity2.class);
+                intent.putExtra(Keyword.JUMPPOSITION, stateStationBean.isJUMPPOSITION());
+                intent.putExtra(Keyword.STATIONPOSITION, stateStationBean.getPosition());
+                intent.putExtra(Keyword.SELECTSTATIONID, stateStationBean.getStationSelId());
+                startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -187,14 +198,18 @@ public class JieStationMapActivity extends BasaActivity implements NetWorkListen
 
                     break;
                 case Keyword.FLAGFACHE:
+                    StateStationBean stateStationBean = new StateStationBean();
+                    stateStationBean.setJUMPPOSITION(true);
+                    stateStationBean.setStationSelId(stationSelId);
+                    stateStationBean.setPosition(Position);
+                    sp.saveToShared(Keyword.STATESTATIONBEAN,stateStationBean);
+                    sp.setboolean(Keyword.ISDAOZHAN, false);
                     setSJTime();
-                    Stationutil stationutil = Stationutil.newInstance();
                     Intent intent = new Intent(JieStationMapActivity.this, JieChildListActivity2.class);
                     intent.putExtra(Keyword.JUMPPOSITION, true);
                     intent.putExtra(Keyword.STATIONPOSITION, Position);
                     intent.putExtra(Keyword.SELECTSTATIONID, stationSelId);
                     startActivity(intent);
-                    stationutil = null;
                     break;
             }
         }

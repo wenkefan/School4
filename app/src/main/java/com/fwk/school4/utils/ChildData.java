@@ -5,6 +5,7 @@ import com.fwk.school4.model.ChildBean;
 import com.fwk.school4.model.StaBean;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -71,7 +72,26 @@ public class ChildData {
             }
 
             map.put(strId, list);
-
+            Songshangche(map, staBean, mItem);
+        } else {
+            //如果已上车在选择其他状态时，就要取消下车站点
+            if (map.get(staBean.getStrid()).get(mItem).getSelectid() == 1) {
+                ChildBean.RerurnValueBean bean1 = map.get(staBean.getStrid()).get(mItem);
+                int stationId = bean1.getSendStation();//下车站点ID
+                List<ChildBean.RerurnValueBean> list = map.get(stationId + "02");
+                if (list.size() == 1) {
+                    map.remove(stationId + "02");
+                } else {
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).getChildId() == bean1.getChildId()) {
+                            list.remove(i);
+                            break;
+                        }
+                    }
+                }
+                Jieshangche(map, staBean, mItem);
+            }
+            Songshangche1(map, staBean, mItem);
         }
 
         map.get(staBean.getStrid()).get(mItem).setSelectid(position);
@@ -131,7 +151,25 @@ public class ChildData {
                 list.add(setNew(valueBean));
             }
             map.put(strId, list);
-
+            Jieshangche(map, staBean, mItem);
+        } else {
+            //如果已上车在选择其他状态时，就要取消下车站点
+            if (map.get(staBean.getStrid()).get(mItem).getSelectid() == 1) {
+                ChildBean.RerurnValueBean bean1 = map.get(staBean.getStrid()).get(mItem);
+                int stationId = bean1.getConnectEndStation();//下车站点ID
+                List<ChildBean.RerurnValueBean> list = map.get(stationId + "02");
+                if (list.size() == 1) {
+                    map.remove(stationId + "02");
+                } else {
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).getChildId() == bean1.getChildId()) {
+                            list.remove(i);
+                            break;
+                        }
+                    }
+                }
+                Jieshangche1(map, staBean, mItem);
+            }
         }
 
 
@@ -140,18 +178,113 @@ public class ChildData {
         spData.saveToShared(Keyword.MAPLIST, map);
     }
 
-    public static int setXiache(Map<String, List<ChildBean.RerurnValueBean>> map, StaBean staBean, int mItem, int position) {
+
+    public static int setXiache(Map<String, List<ChildBean.RerurnValueBean>> map, StaBean staBean, int mItem, int position, int sel) {
         if (map.get(staBean.getStrid()).get(mItem).getSelectid() == position) {
             return 0;
         }
-        map.get(staBean.getStrid()).get(mItem).setSelectid(position);
-        spData.saveToShared(Keyword.MAPLIST, map);
+        if (sel != 0) {
+            map.get(staBean.getStrid()).get(mItem).setSelectid(position);
+            spData.saveToShared(Keyword.MAPLIST, map);
+            if (sel == 1) {
+                Jiexiache(map, staBean, mItem);
+            } else if (sel == 2) {
+                Songxiache(map, staBean, mItem);
+            }
+        }
         return 1;
+    }
+
+    private static Map<Integer, Integer> Shangche;
+    private static Map<Integer, Integer> Xiache;
+    private static int shengyu;
+
+    private static void Jieshangche(Map<String, List<ChildBean.RerurnValueBean>> map, StaBean staBean, int mItem) {
+        Shangche = (Map<Integer, Integer>) sp.queryForSharedToObject(Keyword.SHANGCHENUMBER);
+        if (Shangche == null) {
+            Shangche = new HashMap<>();
+        }
+        if (Shangche.get(map.get(staBean.getStrid()).get(mItem).getConnectStation()) == null) {
+            Shangche.put(map.get(staBean.getStrid()).get(mItem).getConnectStation(), 1);
+        } else {
+            int number = Shangche.get(map.get(staBean.getStrid()).get(mItem).getConnectStation());
+            Shangche.put(map.get(staBean.getStrid()).get(mItem).getConnectStation(), number + 1);
+        }
+        shengyu = sp.getInt(Keyword.CARNUMBER);
+        sp.setInt(Keyword.CARNUMBER, shengyu + 1);
+        sp.saveToShared(Keyword.SHANGCHENUMBER, Shangche);
+    }
+
+    private static void Jieshangche1(Map<String, List<ChildBean.RerurnValueBean>> map, StaBean staBean, int mItem) {
+        Shangche = (Map<Integer, Integer>) sp.queryForSharedToObject(Keyword.SHANGCHENUMBER);
+        int number = Shangche.get(map.get(staBean.getStrid()).get(mItem).getConnectStation());
+        Shangche.put(map.get(staBean.getStrid()).get(mItem).getConnectStation(), number - 1);
+        shengyu = sp.getInt(Keyword.CARNUMBER);
+        sp.setInt(Keyword.CARNUMBER, shengyu - 1);
+        sp.saveToShared(Keyword.SHANGCHENUMBER, Shangche);
+    }
+
+    private static void Jiexiache(Map<String, List<ChildBean.RerurnValueBean>> map, StaBean staBean, int mItem) {
+        Xiache = (Map<Integer, Integer>) sp.queryForSharedToObject(Keyword.XIACHENUMBER);
+        if (Xiache == null) {
+            Xiache = new HashMap<>();
+        }
+        if (Xiache.get(map.get(staBean.getStrid()).get(mItem).getConnectEndStation()) == null) {
+            Xiache.put(map.get(staBean.getStrid()).get(mItem).getConnectEndStation(), 1);
+        } else {
+            int number = Xiache.get(map.get(staBean.getStrid()).get(mItem).getConnectEndStation());
+            Xiache.put(map.get(staBean.getStrid()).get(mItem).getConnectEndStation(), number + 1);
+        }
+        shengyu = sp.getInt(Keyword.CARNUMBER);
+        sp.setInt(Keyword.CARNUMBER, shengyu - 1);
+        sp.saveToShared(Keyword.XIACHENUMBER, Xiache);
+    }
+
+    private static void Songshangche(Map<String, List<ChildBean.RerurnValueBean>> map, StaBean staBean, int mItem) {
+        Shangche = (Map<Integer, Integer>) sp.queryForSharedToObject(Keyword.SHANGCHENUMBER);
+        if (Shangche == null) {
+            Shangche = new HashMap<>();
+        }
+        if (Shangche.get(map.get(staBean.getStrid()).get(mItem).getSendStartStation()) == null) {
+            Shangche.put(map.get(staBean.getStrid()).get(mItem).getSendStartStation(), 1);
+        } else {
+            int number = Shangche.get(map.get(staBean.getStrid()).get(mItem).getSendStartStation());
+            Shangche.put(map.get(staBean.getStrid()).get(mItem).getSendStartStation(), number + 1);
+        }
+        shengyu = sp.getInt(Keyword.CARNUMBER);
+        sp.setInt(Keyword.CARNUMBER, shengyu + 1);
+        sp.saveToShared(Keyword.SHANGCHENUMBER, Shangche);
+    }
+
+    private static void Songshangche1(Map<String, List<ChildBean.RerurnValueBean>> map, StaBean staBean, int mItem) {
+        Shangche = (Map<Integer, Integer>) sp.queryForSharedToObject(Keyword.SHANGCHENUMBER);
+        int number = Shangche.get(map.get(staBean.getStrid()).get(mItem).getSendStartStation());
+        Shangche.put(map.get(staBean.getStrid()).get(mItem).getSendStartStation(), number - 1);
+        shengyu = sp.getInt(Keyword.CARNUMBER);
+        sp.setInt(Keyword.CARNUMBER, shengyu - 1);
+        sp.saveToShared(Keyword.SHANGCHENUMBER, Shangche);
+    }
+
+    private static void Songxiache(Map<String, List<ChildBean.RerurnValueBean>> map, StaBean staBean, int mItem) {
+        Xiache = (Map<Integer, Integer>) sp.queryForSharedToObject(Keyword.XIACHENUMBER);
+        if (Xiache == null) {
+            Xiache = new HashMap<>();
+        }
+        if (Xiache.get(map.get(staBean.getStrid()).get(mItem).getSendStation()) == null) {
+            Xiache.put(map.get(staBean.getStrid()).get(mItem).getSendStation(), 1);
+        } else {
+            int number = Xiache.get(map.get(staBean.getStrid()).get(mItem).getSendStation());
+            Xiache.put(map.get(staBean.getStrid()).get(mItem).getSendStation(), number + 1);
+        }
+        shengyu = sp.getInt(Keyword.CARNUMBER);
+        sp.setInt(Keyword.CARNUMBER, shengyu - 1);
+        sp.saveToShared(Keyword.XIACHENUMBER, Xiache);
+        LogUtils.d("调用了" + (shengyu - 1));
     }
 
     public static ChildBean.RerurnValueBean setNew(ChildBean.RerurnValueBean valueBean) {
         ChildBean.RerurnValueBean valueBean1 = new ChildBean.RerurnValueBean();
-        valueBean1.setSelectid(valueBean.getSelectid());
+        valueBean1.setSelectid(0);
         valueBean1.setChildId(valueBean.getChildId());
         valueBean1.setChildName(valueBean.getChildName());
         valueBean1.setConnectEndStation(valueBean.getConnectEndStation());

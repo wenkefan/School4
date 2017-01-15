@@ -74,7 +74,7 @@ public class JieChildListAdapter2 extends BaseRecyclerAdapter {
             });
             if (staBeen.get(position).getId() == selStationID)
             if (staBeen.get(position).getId() == selStationID){
-                Drawable drawable = context.getDrawable(R.mipmap.station);
+                Drawable drawable = context.getResources().getDrawable(R.mipmap.station);
                 drawable.setBounds(0,0,drawable.getMinimumWidth(),drawable.getMinimumHeight());
                 viewHolde.tv.setCompoundDrawables(drawable,null,null,null);
                 viewHolde.tv.setTextColor(context.getResources().getColor(R.color.black));

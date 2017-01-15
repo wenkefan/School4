@@ -134,4 +134,5 @@ public class Keyword {
 
     public static final String SELECTSTATIONID = "SELECTSTATIONID";//点击到站时选择的站点ID
 
+    public static final String STATESTATIONBEAN = "STATESTATIONBEAN";
 }

@@ -160,7 +160,7 @@ public class JieChildListActivity2 extends NFCBaseActivity implements JieChildLi
             } else if (requestCode == 2) {
                 //下车重新分组
                 childPosition = data.getIntExtra(Keyword.SP_SELECT_ID, 0);
-                if (ChildData.setXiache(map, staBean, mItem, childPosition) == 0) {
+                if (ChildData.setXiache(map, staBean, mItem, childPosition,0) == 0) {
                     ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + "已下车");
                     return;
                 }
@@ -242,17 +242,16 @@ public class JieChildListActivity2 extends NFCBaseActivity implements JieChildLi
                     break;
                 case Keyword.FLAGENDDAOZHAN:
                     ToastUtil.show("结束了");
-                    sp.setboolean(Keyword.BEGIN, false);
+                    sp.removData();
                     finish();
                     break;
                 case Keyword.FLAGDOWNCAR:
                     ChildData.setJieData(map, staBean, mItem, childPosition);
-                    shangche();
                     adapter.getData(selStationID);
                     adapter.notifyDataSetChanged();
                     break;
                 case Keyword.FLAGUPCAR:
-                    xiache();
+                    ChildData.setXiache(map, staBean, mItem, childPosition,1);
                     adapter.getData(selStationID);
                     adapter.notifyDataSetChanged();
                     ToastUtil.show(map.get(staBean.getStrid()).get(mItem).getChildName() + "下车");
@@ -260,40 +259,6 @@ public class JieChildListActivity2 extends NFCBaseActivity implements JieChildLi
             }
         }
     };
-
-    private Map<Integer,Integer> Shangche;
-    private Map<Integer,Integer> Xiache;
-    private int shengyu;
-    private void shangche(){
-        Shangche = (Map<Integer, Integer>) sp.queryForSharedToObject(Keyword.SHANGCHENUMBER);
-        if (Shangche == null){
-            Shangche = new HashMap<>();
-        }
-        if (Shangche.get(map.get(staBean.getStrid()).get(mItem).getConnectStation()) == null){
-            Shangche.put(map.get(staBean.getStrid()).get(mItem).getConnectStation(),1);
-        } else {
-            int number = Shangche.get(map.get(staBean.getStrid()).get(mItem).getConnectStation());
-            Shangche.put(map.get(staBean.getStrid()).get(mItem).getConnectStation(),number + 1);
-        }
-        shengyu = sp.getInt(Keyword.CARNUMBER);
-        sp.setInt(Keyword.CARNUMBER,shengyu + 1);
-        sp.saveToShared(Keyword.SHANGCHENUMBER,Shangche);
-    }
-    private void xiache(){
-        Xiache = (Map<Integer, Integer>) sp.queryForSharedToObject(Keyword.XIACHENUMBER);
-        if (Xiache == null){
-            Xiache = new HashMap<>();
-        }
-        if (Xiache.get(map.get(staBean.getStrid()).get(mItem).getConnectEndStation()) == null){
-            Xiache.put(map.get(staBean.getStrid()).get(mItem).getConnectEndStation(),1);
-        } else {
-            int number = Xiache.get(map.get(staBean.getStrid()).get(mItem).getConnectEndStation());
-            Xiache.put(map.get(staBean.getStrid()).get(mItem).getConnectEndStation(),number + 1);
-        }
-        shengyu = sp.getInt(Keyword.CARNUMBER);
-        sp.setInt(Keyword.CARNUMBER,shengyu - 1);
-        sp.saveToShared(Keyword.XIACHENUMBER,Xiache);
-    }
 
     @Override
     public void onBackPressed() {

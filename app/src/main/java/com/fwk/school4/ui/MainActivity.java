@@ -60,10 +60,13 @@ public class MainActivity extends BasaActivity implements NetWorkListener, BaseR
     public void init() {
         sp = new SharedPreferencesUtils();
         spData = new SharedPreferencesUtils2();
+        if (!sp.getBoolean(Keyword.BEGIN)){
+            sp.removData();
+            spData.removData();
+        }
         title.setText(getResources().getString(R.string.main_tltile));
         if (sp.getBoolean(Keyword.BEGIN)) {
             MainDialog.Beagin(this, (BanciBean.RerurnValueBean) sp.queryForSharedToObject(Keyword.SELECTBANCI));
-
         } else {
             //请求班次
             requestBanci();
@@ -142,7 +145,7 @@ public class MainActivity extends BasaActivity implements NetWorkListener, BaseR
         SpBanci.save(bean.getBusScheduleId(), bean.getLineId(), bean.getAttendanceDirections());
         this.bean = bean;
         switch (bean.getStatus()) {
-            case 0:
+            case 1:
                 spData.setInt(Keyword.SP_ATTENDANCEDIRECTIONS, bean.getAttendanceDirections());
                 if (bean.getOriginal()) {
 
@@ -160,7 +163,7 @@ public class MainActivity extends BasaActivity implements NetWorkListener, BaseR
                         1, SpLogin.getWorkerExtensionId());
 
                 break;
-            case 1:
+            case 0:
                 if (bean.getModifierId() == SpLogin.getWorkerExtensionId()) {
                     if (bean.getAttendanceDirections() == 1) {
                         mHandler.sendEmptyMessage(0x01);
