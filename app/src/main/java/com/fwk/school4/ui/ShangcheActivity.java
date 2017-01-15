@@ -82,7 +82,7 @@ public class ShangcheActivity extends BasaActivity implements View.OnClickListen
         tvMotherPhone.setText(bean.getMotherPhone());
         rv.setHasFixedSize(true);
         rv.setLayoutManager(manager);
-        adapter = new ShangCheRecyclerAdapter();
+        adapter = new ShangCheRecyclerAdapter(bean.getSelectid()-1);
         rv.setAdapter(adapter);
         adapter.setOnItemListener(this);
     }

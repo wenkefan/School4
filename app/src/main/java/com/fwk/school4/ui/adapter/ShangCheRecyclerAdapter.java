@@ -17,6 +17,12 @@ public class ShangCheRecyclerAdapter extends BaseRecyclerAdapter {
     private Context context;
     private String[] askForLeaveStatus = new String[]{"已上车（已刷卡、未带卡）", "病假", "事假", "家长接送"};
     private int item = 0;
+    public ShangCheRecyclerAdapter(int selectid) {
+        if (selectid > 0) {
+            this.item = selectid;
+        }
+    }
+
     @Override
     public ClickableViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
